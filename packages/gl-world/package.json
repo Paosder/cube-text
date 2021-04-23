@@ -1,0 +1,31 @@
+{
+  "name": "@paosder/gl-world",
+  "author": {
+    "name": "Paosder",
+    "email": "denjaraos@gmail.com",
+    "url": "https://github.com/Paosder"
+  },
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "license": "MIT",
+  "scripts": {
+    "prepack": "yarn clean && yarn build",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "dev": "yarn clean && node config/esbuild.dev.mjs",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --no-cache",
+    "test:lint": "eslint \"./src/**/*.{ts,tsx}\" # --max-warnings=0",
+    "build": "yarn build:source && yarn build:type",
+    "build:source": "node config/esbuild.build.mjs",
+    "build:type": "tsc --emitDeclarationOnly"
+  },
+  "dependencies": {
+    "@juggle/resize-observer": "^3.3.0",
+    "@paosder/gl-variable": "^1.0.0",
+    "@paosder/vector-map": "^0.1.10",
+    "gl-matrix": "^3.3.0"
+  }
+}

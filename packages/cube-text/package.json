@@ -1,0 +1,33 @@
+{
+  "name": "@paosder/cube-text",
+  "author": {
+    "name": "Paosder",
+    "email": "denjaraos@gmail.com",
+    "url": "https://github.com/Paosder"
+  },
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "prepack": "yarn build",
+    "dev": "yarn clean && webpack serve --config webpack.config.mjs",
+    "build:lib": "node config/esbuild.config.mjs",
+    "build:type": "tsc --emitDeclarationOnly",
+    "build": "yarn clean && yarn build:lib && yarn build:type",
+    "test": "yarn test:coverage && yarn test:lint",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --no-cache",
+    "test:lint": "eslint \"./src/**/*.{ts,tsx}\""
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@paosder/gl-variable": "^1.0.0",
+    "@paosder/gl-world": "^1.0.0",
+    "gl-matrix": "^3.3.0"
+  }
+}

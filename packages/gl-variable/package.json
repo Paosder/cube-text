@@ -1,0 +1,30 @@
+{
+  "name": "@paosder/gl-variable",
+  "author": {
+    "name": "Paosder",
+    "email": "denjaraos@gmail.com",
+    "url": "https://github.com/Paosder"
+  },
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "license": "MIT",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "yarn clean && yarn build",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "dev": "yarn clean && node config/esbuild.dev.mjs",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --no-cache",
+    "test:lint": "eslint \"./src/**/*.{ts,tsx}\" # --max-warnings=0",
+    "build": "yarn build:source && yarn build:type",
+    "build:source": "node config/esbuild.build.mjs",
+    "build:type": "tsc --emitDeclarationOnly"
+  },
+  "dependencies": {
+    "@paosder/vector-map": "^0.1.10"
+  }
+}

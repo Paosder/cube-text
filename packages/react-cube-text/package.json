@@ -1,0 +1,15 @@
+{
+  "name": "@paosder/react-cube-text",
+  "author": {
+    "name": "Paosder",
+    "email": "denjaraos@gmail.com",
+    "url": "https://github.com/Paosder"
+  },
+  "version": "1.0.0",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "license": "MIT",
+  "scripts": {
+
+  }
+}
