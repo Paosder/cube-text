@@ -181,13 +181,11 @@ export class CubeText {
         const alpha = data.data[i * data.width * 4 + j * 4 + 3];
         if (alpha > this.threshold) {
           // exceeds threshold.
-
           // default: align-left.
           let x = j * textOptions.margin;
-          let y = (-i + data.height) * textOptions.margin;
+          const y = (-i + data.height) * textOptions.margin - centerPosY;
           if (textOptions.align === "center") {
             x -= centerPosX;
-            y -= centerPosY;
           } else if (textOptions.align === "right") {
             x -= centerPosX * 2;
           }
