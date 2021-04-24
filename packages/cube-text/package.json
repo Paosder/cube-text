@@ -28,7 +28,7 @@
   "dependencies": {
     "@paosder/gl-variable": "^1.0.0",
     "@paosder/gl-world": "^1.0.0",
-    "@paosder/vector-map": "^0.1.10",
+    "@paosder/vector-map": "^0.2.0",
     "gl-matrix": "^3.3.0"
   }
 }

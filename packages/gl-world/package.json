@@ -9,7 +9,9 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "scripts": {
     "prepack": "yarn clean && yarn build",
@@ -25,7 +27,7 @@
   "dependencies": {
     "@juggle/resize-observer": "^3.3.0",
     "@paosder/gl-variable": "^1.0.0",
-    "@paosder/vector-map": "^0.1.10",
+    "@paosder/vector-map": "^0.2.0",
     "gl-matrix": "^3.3.0"
   }
 }

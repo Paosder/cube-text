@@ -918,10 +918,10 @@
   dependencies:
     "@octokit/openapi-types" "^6.0.0"
 
-"@paosder/vector-map@^0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@paosder/vector-map/-/vector-map-0.1.10.tgz#17cc0d9dd746cccffcc19b87973c997f5a424528"
-  integrity sha512-nnB1+/shndtRz66Xd28+i6voakv2Stak5yhqj9liZkewWmRnxPsZ6Lmbarpjz9+DIba73zQ/zcAXS8g9CtxlMg==
+"@paosder/vector-map@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@paosder/vector-map/-/vector-map-0.2.0.tgz#77cec02e4b4daa681e89146c327495aec8a45551"
+  integrity sha512-FDdewEPDa4eE2pU7YBFlnPBcuxcpIjpoZSdMzxNCWzFYUJbjCAXwNpEr+QiHJX8PpkA/j/m5IpjauyiHUx5gbw==
 
 "@tootallnate/once@1":
   version "1.1.2"

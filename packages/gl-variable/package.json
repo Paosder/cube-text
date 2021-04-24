@@ -25,6 +25,6 @@
     "build:type": "tsc --emitDeclarationOnly"
   },
   "dependencies": {
-    "@paosder/vector-map": "^0.1.10"
+    "@paosder/vector-map": "^0.2.0"
   }
 }
