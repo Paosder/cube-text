@@ -1,8 +1,11 @@
 import { Color } from "@paosder/gl-world";
+import { vec4 } from "gl-matrix";
+import { GradientColorArgs, RandomColor } from "./type";
 
 export function drawToCanvas(
   text: string,
   fontSize: number,
+  drawType = "fill",
   fontFamily = "Arial"
 ) {
   const canvas = document.createElement("canvas");
@@ -12,8 +15,10 @@ export function drawToCanvas(
   textCtx.textBaseline = "middle";
   textCtx.fillStyle = "black";
   const measured = textCtx.measureText(text);
-  canvas.width =
-    measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight;
+  // Because of italic, we need to calculate more precisely via the bounding box.
+  canvas.width = Math.ceil(
+    measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight
+  );
 
   // re-initialize context2d.
   // https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-set-bitmap-dimensions
@@ -21,30 +26,39 @@ export function drawToCanvas(
   textCtx.textBaseline = "middle";
   textCtx.fillStyle = "black";
 
-  console.log(measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight);
-  textCtx.fillText(text, 0, fontSize * 0.5);
+  if (drawType === "fill") {
+    textCtx.fillText(text, 0, fontSize * 0.5);
+  } else {
+    textCtx.strokeText(text, 0, fontSize * 0.5);
+  }
   return textCtx.getImageData(0, 0, canvas.width, fontSize);
 }
 
 export function determineColor(
   colors: Array<Color>,
-  colorRatio: Array<number>,
+  colorArgs: GradientColorArgs | RandomColor,
   alpha?: number
 ): Color {
-  const sum = colorRatio.reduce<number>((acc, el) => acc + el, 0);
-  let random = Math.random() * sum;
-  for (let i = 0, n = colorRatio.length; i < n; i += 1) {
-    if (random > colorRatio[i]) {
-      random -= colorRatio[i];
-    } else {
-      if (alpha) {
-        // if alpha given, override it.
-        const newColor: Color = [...colors[i]];
-        newColor[3] = alpha;
-        return newColor;
+  if (colorArgs.type === "random") {
+    const sum = colorArgs.ratio.reduce<number>((acc, el) => acc + el, 0);
+    let random = Math.random() * sum;
+    for (let i = 0, n = colorArgs.ratio.length; i < n; i += 1) {
+      if (random > colorArgs.ratio[i]) {
+        random -= colorArgs.ratio[i];
+      } else {
+        if (alpha) {
+          // If alpha is given, override it.
+          const newColor: Color = [...colors[i]];
+          newColor[3] = alpha;
+          return newColor;
+        }
+        return colors[i];
       }
-      return colors[i];
     }
+    return colors[colors.length - 1];
   }
-  return colors[colors.length - 1];
+  if (colorArgs.type === "gradient") {
+    return colors[0];
+  }
+  throw new Error(`unknown colorArgs: ${colorArgs}`);
 }

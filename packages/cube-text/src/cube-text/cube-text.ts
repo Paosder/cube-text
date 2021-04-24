@@ -1,34 +1,30 @@
-import { Color, Coordinate, World } from "@paosder/gl-world";
+import { Coordinate, World } from "@paosder/gl-world";
 import { VectorMap } from "@paosder/vector-map";
 import { mat4, quat, vec3 } from "gl-matrix";
 import { determineColor, drawToCanvas } from "./common";
 import CubeRenderer from "./cube";
-
-// eslint-disable-next-line no-shadow
-export enum DrawOrder {
-  static,
-  incremental,
-  line,
-}
-
-export interface TextOptions {
-  size: number;
-  margin: number;
-  colors: Array<Color>;
-  colorRatio: Array<number>;
-  overrideAlpha?: boolean;
-}
+import { RenderOrder, TextOptions } from "./type";
 
 const DEFAULT_THRESHOLD = 10;
 
-const defaultTextOptions: TextOptions = {
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+export const defaultTextOptions: TextOptions = {
   size: 1,
   margin: 2,
   colors: [
     [1, 0, 0, 0],
     [0, 0, 0, 0],
   ],
-  colorRatio: [0.5, 0.5],
+  colorType: {
+    type: "random",
+    ratio: [0.5, 0.5],
+  },
+  overrideAlpha: false,
+  renderOrder: RenderOrder.static,
+  align: "center",
+  rotate: true,
+  drawType: "fill",
 };
 
 type CubeInfo = Parameters<CubeRenderer["add"]>[1] & {
@@ -54,16 +50,22 @@ export class CubeText {
 
   protected isLoaded: boolean;
 
-  centerPos: Coordinate;
+  textCenterPos: Coordinate;
+
+  #textWidth: number;
+
+  #textHeight: number;
 
   protected prevTime: number;
+
+  protected renderOrder: RenderOrder;
 
   cameraOptions: CameraOptions;
 
   onRenderCamera?: (
     delta: number,
     cameraOptions: CameraOptions,
-    time?: number
+    time: number
   ) => boolean;
 
   threshold: number;
@@ -97,8 +99,11 @@ export class CubeText {
     this.isRunning = false;
     this.isLoaded = false;
     this.prevTime = 0;
-    this.centerPos = [0, 0, 0];
+    this.textCenterPos = [0, 0, 0];
+    this.#textWidth = 0;
+    this.#textHeight = 0;
     this.threshold = DEFAULT_THRESHOLD;
+    this.renderOrder = RenderOrder.static;
     this.pendingCubes = new VectorMap();
   }
 
@@ -116,67 +121,96 @@ export class CubeText {
     this.world.disabled = true;
   }
 
-  loadText(
+  drawText(
     text: string,
     fontSize: number,
-    textOptions: TextOptions = defaultTextOptions,
+    textOptions: Partial<TextOptions> = defaultTextOptions,
     fontFamilyOptions?: { name: string; uri: string }
   ) {
-    if (text === "") return;
+    const opt: TextOptions = {
+      ...defaultTextOptions,
+      ...textOptions,
+    };
+    if (text === "") {
+      throw new Error("text cannot be zero-length.");
+    }
+    if (fontSize === 0) {
+      throw new Error("fontSize cannot be zero.");
+    }
+    this.cubeRenderer.clear();
+    this.renderOrder = opt.renderOrder;
     if (fontFamilyOptions) {
       const f = new FontFace(fontFamilyOptions.name, fontFamilyOptions.uri);
       f.load().then(() => {
         // Ready to use the font in a canvas context
-        const data = drawToCanvas(text, fontSize, fontFamilyOptions.name);
-        this.makeCubeInfo(data, textOptions);
+        const data = drawToCanvas(
+          text,
+          fontSize,
+          opt.drawType,
+          fontFamilyOptions.name
+        );
+        this.makeCubeInfo(data, opt);
         this.isLoaded = true;
       });
     } else {
-      const data = drawToCanvas(text, fontSize);
-      this.makeCubeInfo(data, textOptions);
+      const data = drawToCanvas(text, fontSize, opt.drawType);
+      this.makeCubeInfo(data, opt);
       this.isLoaded = true;
     }
   }
 
-  protected drawText(type: DrawOrder, delta: number) {
-    if (type === DrawOrder.static) {
-      this.pendingCubes.forEach(({ value: cubes }) => {
-        cubes.forEach((cube) => {
-          this.cubeRenderer.add(cube.id, cube);
-        });
-      });
-      this.pendingCubes.clear();
-    }
-    this.isLoaded = false;
-  }
-
   clearText() {
-    this.world.clear();
+    // due to Safari's unknown behavior, we have to clear Safari via special ways.
+    if (isSafari) {
+      this.drawText("_", 1, {
+        ...defaultTextOptions,
+        size: 0,
+      });
+    } else {
+      this.world.clear();
+    }
   }
 
   protected makeCubeInfo(data: ImageData, textOptions: TextOptions) {
     // group cubes with y-level.
-    let minY = Infinity;
-    let maxY = -Infinity;
+    const centerPosX = data.width * 0.5 * textOptions.margin;
+    const centerPosY = data.height * 0.5 * textOptions.margin;
+
     for (let i = data.height - 1; i >= 0; i -= 1) {
       for (let j = data.width - 1; j >= 0; j -= 1) {
         const alpha = data.data[i * data.width * 4 + j * 4 + 3];
         if (alpha > this.threshold) {
           // exceeds threshold.
-          const x = j * textOptions.margin;
-          const y = (-i + data.height) * textOptions.margin;
+
+          // default: align-left.
+          let x = j * textOptions.margin;
+          let y = (-i + data.height) * textOptions.margin;
+          if (textOptions.align === "center") {
+            x -= centerPosX;
+            y -= centerPosY;
+          } else if (textOptions.align === "right") {
+            x -= centerPosX * 2;
+          }
           const cubeData: CubeInfo = {
             id: `${this.world.getNextId()}`,
             color: determineColor(
               textOptions.colors,
-              textOptions.colorRatio,
+              textOptions.colorType.type === "gradient"
+                ? {
+                    ...textOptions.colorType,
+                    tx: 0,
+                    ty: 0,
+                  }
+                : textOptions.colorType,
               !textOptions.overrideAlpha ? alpha / 256 : undefined
             ),
             position: [x, y, 0],
             size: [textOptions.size],
             rotation: mat4.fromQuat(
               mat4.create(),
-              quat.random(quat.identity(quat.create()))
+              textOptions.rotate
+                ? quat.random(quat.identity(quat.create()))
+                : quat.identity(quat.create())
             ),
           };
           const xLine = this.pendingCubes.get(-i + data.height);
@@ -185,15 +219,29 @@ export class CubeText {
           } else {
             this.pendingCubes.set(-i + data.height, [cubeData]);
           }
-          minY = Math.min(minY, y);
-          maxY = Math.max(maxY, y);
         }
       }
     }
-    this.centerPos[0] = data.width * 0.5 * textOptions.margin;
-    this.centerPos[1] = data.height * 0.5 * textOptions.margin;
-    // ! need to check height value.
-    // this.centerPos[1] = (maxY + minY) / 2;
+    if (textOptions.align === "center") {
+      this.textCenterPos[0] = 0;
+      this.textCenterPos[1] = 0;
+    } else if (textOptions.align === "right") {
+      this.textCenterPos[0] = -centerPosX;
+      this.textCenterPos[1] = centerPosY;
+    } else {
+      this.textCenterPos[0] = centerPosX;
+      this.textCenterPos[1] = centerPosY;
+    }
+    this.#textWidth = data.width;
+    this.#textHeight = data.height;
+  }
+
+  get textWidth() {
+    return this.#textWidth;
+  }
+
+  get textHeight() {
+    return this.#textHeight;
   }
 
   run() {
@@ -201,12 +249,24 @@ export class CubeText {
     requestAnimationFrame(this.render);
   }
 
+  protected renderText(type: RenderOrder, delta: number) {
+    if (type === RenderOrder.static) {
+      this.pendingCubes.forEach(({ value: cubes }) => {
+        cubes.forEach((cube) => {
+          this.cubeRenderer.add(cube.id, cube);
+        });
+      });
+      this.pendingCubes.clear();
+      this.isLoaded = false;
+    }
+  }
+
   render(time: number) {
     if (!this.isRunning) {
       return;
     }
     if (this.isLoaded && this.pendingCubes.size > 0) {
-      this.drawText(DrawOrder.static, time - this.prevTime);
+      this.renderText(this.renderOrder, time - this.prevTime);
     }
 
     if (

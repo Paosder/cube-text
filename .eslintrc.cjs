@@ -38,6 +38,8 @@ module.exports = {
     "import/prefer-default-export": "off",
     "max-classes-per-file": "off",
     "no-param-reassign": "off",
+    "no-shadow": "off", // disable to remove bug.
+    "@typescript-eslint/no-shadow": ["error"],
   },
   ignorePatterns: [
     "node_modules",

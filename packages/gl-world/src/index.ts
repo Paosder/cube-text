@@ -50,7 +50,7 @@ export class World {
     this.bAutoResize = false;
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl", {
-      preserveDrawingBuffer: false,
+      // preserveDrawingBuffer: true,
       antialias: true,
     })!;
 
