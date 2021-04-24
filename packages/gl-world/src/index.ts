@@ -43,7 +43,7 @@ export class World {
   disabled?: boolean;
 
   constructor(
-    canvasId: string,
+    className: string,
     initializer?: (gl: WebGLRenderingContext) => void
   ) {
     // create canvas and get gl context.
@@ -61,7 +61,7 @@ export class World {
     canvas.style.top = "0";
     canvas.style.backgroundColor = "black";
     canvas.style.touchAction = "none";
-    canvas.id = canvasId;
+    canvas.classList.add(className);
 
     this.canvas = canvas;
     this.gl = gl;
@@ -217,6 +217,13 @@ export class World {
       this.canvas.parentElement?.removeChild(this.canvas);
       this.attached = false;
     }
+  }
+
+  clear() {
+    this.idCount = 0;
+    this.renderers.forEach(({ value: renderer }) => {
+      renderer.clear();
+    });
   }
 
   get autoResize() {
