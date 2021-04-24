@@ -7,6 +7,7 @@ import {
   GLVariable,
   modifyObject,
   updateVariable,
+  clearObject,
 } from "@paosder/gl-variable";
 import {
   Color,
@@ -255,7 +256,7 @@ class CubeRenderer extends Renderer {
   }
 
   clear() {
-    this.cubes.indices.clear();
+    clearObject(this.cubes);
     this.cubeIds.clear();
   }
 
@@ -284,16 +285,13 @@ class CubeRenderer extends Renderer {
       );
     }
 
-    if (this.cubes.indices.size > 0) {
-      this.instanced.drawElementsInstancedANGLE(
-        this.gl.TRIANGLES,
-        36,
-        this.gl.UNSIGNED_SHORT,
-        0,
-        this.cubes.indices.size
-      );
-    }
-
+    this.instanced.drawElementsInstancedANGLE(
+      this.gl.TRIANGLES,
+      36,
+      this.gl.UNSIGNED_SHORT,
+      0,
+      this.cubes.indices.size
+    );
     this.vaoExt.bindVertexArrayOES(null);
     return CubeRenderer.id;
   }

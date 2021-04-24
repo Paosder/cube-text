@@ -239,6 +239,13 @@ export function deleteObject(objectInfo: GLVariable, id: string): boolean {
   });
 }
 
+export function clearObject(objectInfo: GLVariable) {
+  objectInfo.indices.clear();
+  Object.keys(objectInfo.attrs).forEach((key) => {
+    objectInfo.attrs[key].isDirty = true;
+  });
+}
+
 export function createGLVariable(
   gl: WebGLRenderingContext,
   program: WebGLProgram,

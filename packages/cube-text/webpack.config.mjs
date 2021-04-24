@@ -24,7 +24,7 @@ export default {
   mode: "development",
   devtool: "inline-source-map",
   entry: {
-    main: "./src/index.ts",
+    main: "./src/playground.ts",
   },
   devServer: {
     contentBase: "./dist",

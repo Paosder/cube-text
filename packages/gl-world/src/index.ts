@@ -59,7 +59,7 @@ export class World {
     }
     canvas.style.left = "0";
     canvas.style.top = "0";
-    canvas.style.backgroundColor = "black";
+    canvas.style.backgroundColor = "transparent";
     canvas.style.touchAction = "none";
     canvas.classList.add(className);
 
@@ -98,7 +98,7 @@ export class World {
     };
     this.projection = {
       type: "perspective",
-      fov: Math.PI / 4,
+      fov: Math.PI / 2,
       near: 0.01,
       far: Infinity,
     };
@@ -207,8 +207,12 @@ export class World {
     this.renderers.set(renderer.id, renderer);
   }
 
-  removeRenderer(id: string) {
-    this.renderers.delete(id);
+  removeRenderer(id?: string) {
+    if (id) {
+      this.renderers.delete(id);
+    } else {
+      this.renderers.clear();
+    }
   }
 
   detach() {

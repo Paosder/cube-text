@@ -3,7 +3,7 @@ import { glslify } from "esbuild-plugin-glslify";
 
 esbuild
   .build({
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/cube-text/index.ts"],
     bundle: true,
     format: "esm",
     sourcemap: true,
@@ -25,7 +25,7 @@ esbuild
 
 esbuild
   .build({
-    entryPoints: ["src/index.ts"],
+    entryPoints: ["src/cube-text/index.ts"],
     bundle: true,
     format: "cjs",
     sourcemap: true,
