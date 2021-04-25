@@ -7,7 +7,6 @@ glMatrix.setMatrixArrayType(Array);
 export * from "./common";
 export * from "./type";
 
-console.log("test");
 export class World {
   canvas: HTMLCanvasElement;
 
