@@ -19,7 +19,7 @@ let i = 1;
 const arr = "Hello CubeText!".split("");
 let drawText = "";
 cubeText.drawText("Hello CubeText!", 48, {
-  align: "right",
+  align: "center",
   drawType: "fill",
 });
 // setInterval(() => {

@@ -55,20 +55,14 @@
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run build --stream",
+    "build": "yarn clean && lerna run build --stream",
     "postinstall": "yarn build",
     "clean": "lerna run clean --stream --parallel",
-    "dev": "lerna run dev --stream --parallel",
+    "dev": "yarn clean && lerna run dev --stream --parallel",
     "dev:storybook": "lerna run dev:storybook --stream --parallel",
     "dev:webpack": "lerna run dev:webpack --stream --parallel",
     "lint": "lerna run lint --stream --parallel",
     "prepare": "husky install",
     "prepublishOnly": "yarn clean && yarn build"
-  },
-  "dependencies": {
-    "@paosder/cube-text": "file:packages/cube-text",
-    "@paosder/gl-variable": "file:packages/gl-variable",
-    "@paosder/gl-world": "file:packages/gl-world",
-    "@paosder/react-cube-text": "file:packages/react-cube-text"
   }
 }
