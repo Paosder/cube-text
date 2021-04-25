@@ -22,5 +22,8 @@
     "build:source": "node config/esbuild.build.mjs",
     "build:type": "tsc --emitDeclarationOnly",
     "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "@paosder/cube-text": "file:../cube-text"
   }
 }

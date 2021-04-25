@@ -1,0 +1,26 @@
+import {
+  Meta,
+  Story,
+  ArgsTable,
+  Canvas,
+  Props,
+} from "@storybook/addon-docs/blocks";
+import { CubeText, CubeTextProps } from "./CubeText";
+
+<Meta title="CubeText/Introduction" component={CubeText} />
+
+export const Template = (args) => <CubeText {...args} />;
+
+# Button
+
+Some **markdown** description, or whatever you want.2
+
+# Test
+
+<Story name="CubeText" height="400px" args={{ text: "test" }}>
+  {Template.bind({})}
+</Story>
+
+## ArgsTable
+
+<Props story="CubeText" />

@@ -2155,8 +2155,8 @@
 "@paosder/cube-text@file:packages/cube-text":
   version "1.0.0"
   dependencies:
-    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-eade7686-9b7f-45aa-9416-247c8362faf4-1619317069553/node_modules/@paosder/gl-variable"
-    "@paosder/gl-world" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-eade7686-9b7f-45aa-9416-247c8362faf4-1619317069553/node_modules/@paosder/gl-world"
+    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-ee4f7be2-9103-4407-b02c-be9014eaa89f-1619325450061/node_modules/@paosder/gl-variable"
+    "@paosder/gl-world" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-ee4f7be2-9103-4407-b02c-be9014eaa89f-1619325450061/node_modules/@paosder/gl-world"
     "@paosder/vector-map" "^0.2.0"
     gl-matrix "^3.3.0"
 
@@ -2169,12 +2169,14 @@
   version "1.0.0"
   dependencies:
     "@juggle/resize-observer" "^3.3.0"
-    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-gl-world-1.0.0-9787b37c-2563-40e0-808e-22a0f8e1175f-1619317069555/node_modules/@paosder/gl-variable"
+    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-gl-world-1.0.0-456c92c8-df5b-4443-be04-b458b7bd9423-1619325450064/node_modules/@paosder/gl-variable"
     "@paosder/vector-map" "^0.2.0"
     gl-matrix "^3.3.0"
 
 "@paosder/react-cube-text@file:packages/react-cube-text":
   version "1.0.0"
+  dependencies:
+    "@paosder/cube-text" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-react-cube-text-1.0.0-eeb9ecdb-9b22-49d9-bd7a-fca5019c27df-1619325450065/node_modules/@paosder/cube-text"
 
 "@paosder/vector-map@^0.2.0":
   version "0.2.0"
