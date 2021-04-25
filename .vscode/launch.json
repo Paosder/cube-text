@@ -2,14 +2,22 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  // fix monorepo sourcemap issue.
+  // https://stackoverflow.com/questions/61875212/debugging-with-vscode-not-working-in-a-webpack-typescript-no-framework
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:8080",
-      "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}/packages",
+      "trace": "verbose",
+      "sourceMapPathOverrides": {
+        "webpack://@paosder/cube-text/../node_modules/@paosder/*": "${webRoot}/*",
+        "webpack://@paosder/cube-text/./src/*": "${webRoot}/cube-text/src/*",
+        "webpack:///./~/*": "${webRoot}/node_modules/*",
+      }
     }
   ]
 }
