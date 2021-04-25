@@ -17,11 +17,14 @@
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
-    "dev": "start-storybook -p 6006",
     "build": "yarn build:source && yarn build:type",
     "build:source": "node config/esbuild.build.mjs",
     "build:type": "tsc --emitDeclarationOnly",
-    "build-storybook": "build-storybook"
+    "dev:storybook": "start-storybook -p 6006",
+    "build:storybook": "build-storybook"
+  },
+  "resolutions": {
+    "acorn": "8.0.1"
   },
   "dependencies": {
     "@paosder/cube-text": "file:../cube-text"

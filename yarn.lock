@@ -2155,8 +2155,8 @@
 "@paosder/cube-text@file:packages/cube-text":
   version "1.0.0"
   dependencies:
-    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-ee4f7be2-9103-4407-b02c-be9014eaa89f-1619325450061/node_modules/@paosder/gl-variable"
-    "@paosder/gl-world" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-ee4f7be2-9103-4407-b02c-be9014eaa89f-1619325450061/node_modules/@paosder/gl-world"
+    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-5f02e8d6-b741-4808-bb74-f9e3b939903f-1619335639437/node_modules/@paosder/gl-variable"
+    "@paosder/gl-world" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-cube-text-1.0.0-5f02e8d6-b741-4808-bb74-f9e3b939903f-1619335639437/node_modules/@paosder/gl-world"
     "@paosder/vector-map" "^0.2.0"
     gl-matrix "^3.3.0"
 
@@ -2169,14 +2169,14 @@
   version "1.0.0"
   dependencies:
     "@juggle/resize-observer" "^3.3.0"
-    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-gl-world-1.0.0-456c92c8-df5b-4443-be04-b458b7bd9423-1619325450064/node_modules/@paosder/gl-variable"
+    "@paosder/gl-variable" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-gl-world-1.0.0-1a4c4d26-45d1-4a37-ba13-bb3a34771495-1619335639441/node_modules/@paosder/gl-variable"
     "@paosder/vector-map" "^0.2.0"
     gl-matrix "^3.3.0"
 
 "@paosder/react-cube-text@file:packages/react-cube-text":
   version "1.0.0"
   dependencies:
-    "@paosder/cube-text" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-react-cube-text-1.0.0-eeb9ecdb-9b22-49d9-bd7a-fca5019c27df-1619325450065/node_modules/@paosder/cube-text"
+    "@paosder/cube-text" "file:../../../Library/Caches/Yarn/v6/npm-@paosder-react-cube-text-1.0.0-1bc9ad80-361e-4a24-a4cd-29904eea3c4d-1619335639443/node_modules/@paosder/cube-text"
 
 "@paosder/vector-map@^0.2.0":
   version "0.2.0"
@@ -3649,9 +3649,9 @@ acorn@^7.1.1, acorn@^7.4.0, acorn@^7.4.1:
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
 acorn@^8.0.4:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.1.1.tgz#fb0026885b9ac9f48bac1e185e4af472971149ff"
-  integrity sha512-xYiIVjNuqtKXMxlRMDc6mZUhXehod4a3gbZ1qRlM7icK4EbxUFNLhWoPblCvFtB2Y9CIqHP3CF/rdxLItaQv8g==
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.2.1.tgz#0d36af126fb6755095879c1dc6fd7edf7d60a5fb"
+  integrity sha512-z716cpm5TX4uzOzILx8PavOE6C6DKshHDw1aQN52M/yNSqE9s5O8SMfyhCCfCJ3HmTL0NkVOi+8a/55T7YB3bg==
 
 add-stream@^1.0.0:
   version "1.0.0"

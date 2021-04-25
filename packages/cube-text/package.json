@@ -13,8 +13,9 @@
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf dist && rimraf config/tsconfig.tsbuildinfo",
-    "dev": "yarn clean && webpack serve --config webpack.config.mjs",
-    "build:lib": "node config/esbuild.config.mjs",
+    "dev:storybook": "yarn clean && node config/esbuild.storybook.mjs",
+    "dev:webpack": "yarn clean && webpack serve --config webpack.config.mjs",
+    "build:lib": "node config/esbuild.build.mjs",
     "build:type": "tsc --emitDeclarationOnly -p ./config",
     "build": "yarn clean && yarn build:lib && yarn build:type",
     "test": "yarn test:coverage && yarn test:lint",

@@ -1,10 +1,4 @@
-import {
-  Meta,
-  Story,
-  ArgsTable,
-  Canvas,
-  Props,
-} from "@storybook/addon-docs/blocks";
+import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
 import { CubeText, CubeTextProps } from "./CubeText";
 
 <Meta title="CubeText/Introduction" component={CubeText} />
@@ -17,10 +11,12 @@ Some **markdown** description, or whatever you want.2
 
 # Test
 
-<Story name="CubeText" height="400px" args={{ text: "test" }}>
-  {Template.bind({})}
-</Story>
+<Canvas>
+  <Story name="CubeText" height="400px" args={{ text: "test" }}>
+    {(args) => <CubeText {...args} />}
+  </Story>
+</Canvas>
 
 ## ArgsTable
 
-<Props story="CubeText" />
+<ArgsTable story="CubeText" />

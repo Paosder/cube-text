@@ -8,7 +8,7 @@ esbuild
     format: "esm",
     sourcemap: true,
     outfile: "dist/esm/index.js",
-    target: "es2020",
+    target: "es6",
     plugins: [
       glslify({
         compress: true,
