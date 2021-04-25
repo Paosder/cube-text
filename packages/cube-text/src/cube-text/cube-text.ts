@@ -165,6 +165,7 @@ export class CubeText {
         ...defaultTextOptions,
         size: 0,
       });
+      this.world.clear();
     } else {
       this.world.clear();
     }
