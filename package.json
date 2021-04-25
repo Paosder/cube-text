@@ -7,9 +7,18 @@
   },
   "private": true,
   "devDependencies": {
+    "@babel/core": "^7.13.16",
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-links": "^6.2.9",
+    "@storybook/builder-webpack5": "^6.2.9",
+    "@storybook/react": "^6.2.9",
     "@types/css-font-loading-module": "^0.0.4",
+    "@types/react": "^17.0.3",
+    "@types/react-dom": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "concurrently": "^6.0.2",
     "esbuild": "^0.11.13",
@@ -17,6 +26,7 @@
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.2.0",
+    "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.4.0",
     "glslify-import": "^3.1.0",
@@ -24,12 +34,14 @@
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
     "prettier": "^2.2.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "source-map-loader": "^2.0.1",
     "ts-loader": "^9.1.0",
     "tsc-watch": "^4.2.9",
     "typescript": "^4.2.4",
-    "webpack": "^5.35.0",
+    "webpack": "^5.35.1",
     "webpack-cli": "^4.6.0",
     "webpack-dev-server": "^3.11.2"
   },
@@ -45,5 +57,11 @@
     "lint": "lerna run lint --stream --parallel",
     "prepare": "husky install",
     "prepublishOnly": "yarn clean && yarn build"
+  },
+  "dependencies": {
+    "@paosder/cube-text": "file:packages/cube-text",
+    "@paosder/gl-variable": "file:packages/gl-variable",
+    "@paosder/gl-world": "file:packages/gl-world",
+    "@paosder/react-cube-text": "file:packages/react-cube-text"
   }
 }

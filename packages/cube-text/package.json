@@ -11,8 +11,8 @@
   "types": "dist/cube-text/index.d.ts",
   "license": "MIT",
   "scripts": {
+    "prepack": "yarn clean && yarn build",
     "clean": "rimraf dist && rimraf config/tsconfig.tsbuildinfo",
-    "prepack": "yarn build",
     "dev": "yarn clean && webpack serve --config webpack.config.mjs",
     "build:lib": "node config/esbuild.config.mjs",
     "build:type": "tsc --emitDeclarationOnly -p ./config",
@@ -26,8 +26,8 @@
     "dist"
   ],
   "dependencies": {
-    "@paosder/gl-variable": "^1.0.0",
-    "@paosder/gl-world": "^1.0.0",
+    "@paosder/gl-variable": "file:../gl-variable",
+    "@paosder/gl-world": "file:../gl-world",
     "@paosder/vector-map": "^0.2.0",
     "gl-matrix": "^3.3.0"
   }

@@ -8,8 +8,19 @@
   "version": "1.0.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
   "scripts": {
-
+    "prepack": "yarn clean && yarn build",
+    "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
+    "dev": "start-storybook -p 6006",
+    "build": "yarn build:source && yarn build:type",
+    "build:source": "node config/esbuild.build.mjs",
+    "build:type": "tsc --emitDeclarationOnly",
+    "build-storybook": "build-storybook"
   }
 }
