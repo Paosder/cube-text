@@ -8,32 +8,36 @@ document.body.appendChild(wrapper);
 
 const cubeText = new CubeText(wrapper);
 cubeText.onRenderCamera = (delta, cameraOptions, time) => {
-  cameraOptions.eye[2] = cubeText.textWidth * 0.25;
-  // [cameraOptions.eye[0], cameraOptions.eye[1]] = cubeText.textCenterPos;
-  [cameraOptions.lookAt[0], cameraOptions.lookAt[1]] = cubeText.textCenterPos;
-  cameraOptions.up[0] = Math.sin((time * 0.05 * Math.PI) / 180);
-  cameraOptions.up[1] = Math.cos((time * 0.05 * Math.PI) / 180);
+  const zPos = Math.max(
+    cubeText.textHeight / Math.tan(Math.PI / 8),
+    cubeText.textWidth /
+      Math.tan(Math.PI / 8) /
+      (cubeText.world.canvas.width / cubeText.world.canvas.height)
+  );
+
+  cameraOptions.eye[2] = zPos;
+  // cameraOptions.eye[2] = zPos * Math.cos((Math.PI * time * 0.1) / 180);
+  // cameraOptions.eye[0] = zPos * Math.sin((Math.PI * time * 0.1) / 180);
   return true;
 };
 let i = 1;
 const arr = "Hello CubeText!".split("");
 let drawText = "";
-cubeText.drawText("Hello CubeText!", 48, {
-  align: "center",
-  drawType: "fill",
-});
-// setInterval(() => {
-//   if (i < 48) {
-//     if (i <= arr.length) {
-//       drawText += arr[i - 1];
-//     }
-//     i += 1;
-//     cubeText.drawText(drawText, 49 - i, {
-//       align: "right",
-//     });
-//   } else if (i === 48) {
-//     cubeText.clearText();
-//   }
-// }, 30);
+
+const interval = () => {
+  if (i < 48) {
+    if (i <= arr.length) {
+      drawText += arr[i - 1];
+    }
+    i += 1;
+    cubeText.drawText(drawText, 49 - i, {
+      align: "center",
+    });
+  } else if (i === 48) {
+    cubeText.clearText();
+    clearInterval(t);
+  }
+};
+const t = setInterval(interval, 30);
 
 cubeText.run();

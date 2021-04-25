@@ -98,7 +98,7 @@ export class World {
     };
     this.projection = {
       type: "perspective",
-      fov: Math.PI / 2,
+      fov: Math.PI / 4,
       near: 0.01,
       far: Infinity,
     };

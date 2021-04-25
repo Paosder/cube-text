@@ -174,7 +174,8 @@ export class CubeText {
   protected makeCubeInfo(data: ImageData, textOptions: TextOptions) {
     // group cubes with y-level.
     const centerPosX = data.width * 0.5 * textOptions.margin;
-    const centerPosY = data.height * 0.5 * textOptions.margin;
+    let centerPosY = data.height * 0.5 * textOptions.margin;
+    let minY = -1;
 
     for (let i = data.height - 1; i >= 0; i -= 1) {
       for (let j = data.width - 1; j >= 0; j -= 1) {
@@ -183,6 +184,12 @@ export class CubeText {
           // exceeds threshold.
           // default: align-left.
           let x = j * textOptions.margin;
+          if (minY === -1) {
+            // minimum coordinate of Y is not always starts with 0.
+            // Therefore we should add its start coord.
+            minY = -i + data.height;
+            centerPosY += minY;
+          }
           const y = (-i + data.height) * textOptions.margin - centerPosY;
           if (textOptions.align === "center") {
             x -= centerPosX;
@@ -231,7 +238,7 @@ export class CubeText {
       this.textCenterPos[1] = centerPosY;
     }
     this.#textWidth = data.width;
-    this.#textHeight = data.height;
+    this.#textHeight = data.height - minY;
   }
 
   get textWidth() {
