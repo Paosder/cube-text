@@ -8,7 +8,6 @@ import { RenderOrder, TextOptions } from "./type";
 const DEFAULT_THRESHOLD = 10;
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
 export const defaultTextOptions: TextOptions = {
   size: 1,
   margin: 2,
@@ -162,7 +161,7 @@ export class CubeText {
   clearText() {
     // due to Safari's unknown behavior, we have to clear Safari via special ways.
     if (isSafari) {
-      this.drawText("_", 1, {
+      this.drawText(".", 8, {
         ...defaultTextOptions,
         size: 0,
       });
