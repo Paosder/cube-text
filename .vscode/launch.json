@@ -9,12 +9,25 @@
     {
       "type": "chrome",
       "request": "launch",
-      "name": "Launch Chrome against localhost",
+      "name": "Launch Chrome: webpack",
       "url": "http://localhost:8080",
       "webRoot": "${workspaceFolder}/packages",
       "sourceMapPathOverrides": {
-        "webpack://@paosder/cube-text/../node_modules/@paosder/*": "${webRoot}/*",
+        "webpack://@paosder/cube-text/../*": "${webRoot}/*",
         "webpack://@paosder/cube-text/./src/*": "${webRoot}/cube-text/src/*",
+        "webpack:///./~/*": "${webRoot}/node_modules/*",
+      }
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome: storybook",
+      "url": "http://localhost:6006",
+      "webRoot": "${workspaceFolder}/packages",
+      "sourceMapPathOverrides": {
+        "webpack:///../../src/cube-text/*": "${webRoot}/cube-text/src/cube-text/*",
+        "webpack:///./stories/*": "${webRoot}/react-cube-text/stories/*",
+        "webpack:///../../../*": "${webRoot}/*",
         "webpack:///./~/*": "${webRoot}/node_modules/*",
       }
     }

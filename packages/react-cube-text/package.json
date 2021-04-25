@@ -5,7 +5,7 @@
     "email": "denjaraos@gmail.com",
     "url": "https://github.com/Paosder"
   },
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
@@ -27,6 +27,6 @@
     "acorn": "8.0.1"
   },
   "dependencies": {
-    "@paosder/cube-text": "file:../cube-text"
+    "@paosder/cube-text": "^0.1.0"
   }
 }
