@@ -1,3 +1,4 @@
+import { VariableIndex } from "@paosder/gl-variable";
 import { Coordinate, World } from "@paosder/gl-world";
 import { VectorMap } from "@paosder/vector-map";
 import { mat4, quat, vec3 } from "gl-matrix";
@@ -28,6 +29,7 @@ export const defaultTextOptions: TextOptions = {
 
 type CubeInfo = Parameters<CubeRenderer["add"]>[1] & {
   id: string;
+  originPos: Coordinate;
 };
 
 interface CameraOptions {
@@ -43,11 +45,9 @@ export class CubeText {
 
   cubeRenderer: CubeRenderer;
 
-  protected pendingCubes: VectorMap<number, Array<CubeInfo>>;
+  protected originCubes: VectorMap<number, Array<CubeInfo>>;
 
   protected isRunning: boolean;
-
-  protected isLoaded: boolean;
 
   textCenterPos: Coordinate;
 
@@ -61,9 +61,16 @@ export class CubeText {
 
   cameraOptions: CameraOptions;
 
+  onCubeInit?: (cubeInfo: CubeInfo) => void;
+
+  onRender?: (
+    origin: VectorMap<number, CubeInfo[]>,
+    cubes: VectorMap<string, VariableIndex>
+  ) => boolean;
+
   onRenderCamera?: (
-    delta: number,
     cameraOptions: CameraOptions,
+    delta: number,
     time: number
   ) => boolean;
 
@@ -80,7 +87,7 @@ export class CubeText {
       this.target = element;
     }
     this.render = this.render.bind(this);
-    this.makeCubeInfo = this.makeCubeInfo.bind(this);
+    this.initCube = this.initCube.bind(this);
     this.pointerMoveEv = this.pointerMoveEv.bind(this);
 
     this.world = new World("cube-text");
@@ -96,14 +103,13 @@ export class CubeText {
     };
 
     this.isRunning = false;
-    this.isLoaded = false;
     this.prevTime = 0;
     this.textCenterPos = [0, 0, 0];
     this.#textWidth = 0;
     this.#textHeight = 0;
     this.threshold = DEFAULT_THRESHOLD;
     this.renderOrder = RenderOrder.static;
-    this.pendingCubes = new VectorMap();
+    this.originCubes = new VectorMap();
   }
 
   pointerMoveEv(e: PointerEvent) {
@@ -148,13 +154,11 @@ export class CubeText {
           opt.drawType,
           fontFamilyOptions.name
         );
-        this.makeCubeInfo(data, opt);
-        this.isLoaded = true;
+        this.initCube(data, opt);
       });
     } else {
       const data = drawToCanvas(text, fontSize, opt.drawType);
-      this.makeCubeInfo(data, opt);
-      this.isLoaded = true;
+      this.initCube(data, opt);
     }
   }
 
@@ -165,13 +169,12 @@ export class CubeText {
         ...defaultTextOptions,
         size: 0,
       });
-      this.world.clear();
     } else {
       this.world.clear();
     }
   }
 
-  protected makeCubeInfo(data: ImageData, textOptions: TextOptions) {
+  protected initCube(data: ImageData, textOptions: TextOptions) {
     // group cubes with y-level.
     const centerPosX = data.width * 0.5 * textOptions.margin;
     let centerPosY = data.height * 0.5 * textOptions.margin;
@@ -209,7 +212,8 @@ export class CubeText {
                 : textOptions.colorType,
               !textOptions.overrideAlpha ? alpha / 256 : undefined
             ),
-            position: [x, y, 0],
+            position: [x, y, 0], // current position.
+            originPos: [x, y, 0], // origin position.
             size: [textOptions.size],
             rotation: mat4.fromQuat(
               mat4.create(),
@@ -218,11 +222,15 @@ export class CubeText {
                 : quat.identity(quat.create())
             ),
           };
-          const xLine = this.pendingCubes.get(-i + data.height);
+          if (this.onCubeInit) {
+            this.onCubeInit(cubeData);
+          }
+          this.cubeRenderer.add(cubeData.id, cubeData);
+          const xLine = this.originCubes.get(-i + data.height);
           if (xLine) {
             xLine.push(cubeData);
           } else {
-            this.pendingCubes.set(-i + data.height, [cubeData]);
+            this.originCubes.set(-i + data.height, [cubeData]);
           }
         }
       }
@@ -254,29 +262,21 @@ export class CubeText {
     requestAnimationFrame(this.render);
   }
 
-  protected renderText(type: RenderOrder, delta: number) {
-    if (type === RenderOrder.static) {
-      this.pendingCubes.forEach(({ value: cubes }) => {
-        cubes.forEach((cube) => {
-          this.cubeRenderer.add(cube.id, cube);
-        });
-      });
-      this.pendingCubes.clear();
-      this.isLoaded = false;
-    }
-  }
-
   render(time: number) {
     if (!this.isRunning) {
       return;
     }
-    if (this.isLoaded && this.pendingCubes.size > 0) {
-      this.renderText(this.renderOrder, time - this.prevTime);
+
+    if (
+      this.onRender &&
+      this.onRender(this.originCubes, this.cubeRenderer.cubes)
+    ) {
+      this.cubeRenderer.updateBuffer(true);
     }
 
     if (
       this.onRenderCamera &&
-      this.onRenderCamera(time - this.prevTime, this.cameraOptions, time)
+      this.onRenderCamera(this.cameraOptions, time - this.prevTime, time)
     ) {
       this.world.refreshCamera();
     }

@@ -7,7 +7,7 @@ wrapper.style.border = "1px solid gray";
 document.body.appendChild(wrapper);
 
 const cubeText = new CubeText(wrapper);
-cubeText.onRenderCamera = (delta, cameraOptions, time) => {
+cubeText.onRenderCamera = (cameraOptions, delta, time) => {
   const zPos = Math.max(
     cubeText.textHeight / Math.tan(Math.PI / 8),
     cubeText.textWidth /

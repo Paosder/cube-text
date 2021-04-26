@@ -8,6 +8,7 @@ export interface Attribute {
   isDirty: boolean;
   isResized: boolean;
   usage: number;
+  fixed?: boolean;
 }
 
 export interface AttrOptions {
@@ -17,6 +18,7 @@ export interface AttrOptions {
   defaultData?: Float32Array;
   usage?: number;
   matrix?: boolean;
+  fixed?: boolean;
 }
 
 export interface BufferIndex {
@@ -44,6 +46,7 @@ interface AttributeOption {
   defaultData?: Float32Array;
   matrix?: boolean;
   instanced?: number;
+  fixed?: boolean;
 }
 
 interface UniformOption {
@@ -100,6 +103,7 @@ export function createAttribute(
     isDirty: false,
     isResized: false,
     usage,
+    fixed: opt.fixed,
   };
 }
 
@@ -138,7 +142,11 @@ export function addObject(
   data: Record<string, Array<number> | Float32Array>
 ) {
   const objectIndex: Record<string, BufferIndex> = {};
-  Object.entries(data).forEach(([key, _data]) => {
+  Object.keys(objectInfo.attrs).forEach((key) => {
+    if (objectInfo.attrs[key].fixed) {
+      // ignore if this is fixed attribute.
+      return;
+    }
     const targetAttribute = objectInfo.attrs[key];
     const length = targetAttribute.size;
     const index = objectInfo.indices.size * length;
@@ -163,7 +171,7 @@ export function addObject(
       });
     }
     // set new data.
-    targetAttribute.arr.set(_data, index);
+    targetAttribute.arr.set(data[key], index);
     targetAttribute.isDirty = true;
 
     objectIndex[key] = {
@@ -290,10 +298,12 @@ export function createGLVariable(
 export function updateVariable(
   gl: WebGLRenderingContext,
   program: WebGLProgram,
-  variable: GLVariable
+  variable: GLVariable,
+  forced?: boolean
 ) {
   Object.keys(variable.attrs).forEach((k) => {
-    if (variable.attrs[k].isDirty) {
+    if (variable.attrs[k].isDirty || forced) {
+      variable.attrs[k].isDirty = true;
       updateAttribute(gl, program, variable.attrs[k]);
     }
   });

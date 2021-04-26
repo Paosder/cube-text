@@ -34,7 +34,7 @@ class CubeRenderer extends Renderer {
 
   protected instanced!: ANGLE_instanced_arrays;
 
-  protected cubes!: GLVariable;
+  #cubes!: GLVariable;
 
   protected cubeIds!: Map<number, string>;
 
@@ -126,7 +126,7 @@ class CubeRenderer extends Renderer {
 
     // ///////////////////////////////
 
-    this.cubes = createGLVariable(gl, this.program, {
+    this.#cubes = createGLVariable(gl, this.program, {
       surface: {
         name: "a_surface",
         type: "attribute",
@@ -134,6 +134,7 @@ class CubeRenderer extends Renderer {
         length: 24,
         usage: gl.STATIC_DRAW,
         defaultData: points,
+        fixed: true,
       },
       id: {
         name: "a_id",
@@ -190,7 +191,7 @@ class CubeRenderer extends Renderer {
   }
 
   get length() {
-    return this.cubes.indices.size;
+    return this.#cubes.indices.size;
   }
 
   add(
@@ -204,7 +205,7 @@ class CubeRenderer extends Renderer {
   ) {
     const newId = this.getNextId();
     this.cubeIds.set(newId, id);
-    addObject(this.cubes, id, {
+    addObject(this.#cubes, id, {
       ...options,
       id: [
         // id is immutable.
@@ -231,7 +232,11 @@ class CubeRenderer extends Renderer {
     key: string,
     callback: (attr: Float32Array) => boolean
   ) {
-    getAttribArray(this.cubes, id, key, callback);
+    getAttribArray(this.#cubes, id, key, callback);
+  }
+
+  get cubes() {
+    return this.#cubes.indices;
   }
 
   modify(
@@ -243,25 +248,25 @@ class CubeRenderer extends Renderer {
       size: [number];
     }>
   ) {
-    modifyObject(this.cubes, id, options as Record<string, number[]>);
+    modifyObject(this.#cubes, id, options as Record<string, number[]>);
   }
 
   delete(id: string) {
     // execute swap & delete.
-    getAttribArray(this.cubes, id, "id", (data) => {
+    getAttribArray(this.#cubes, id, "id", (data) => {
       const uuid = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
-      deleteObject(this.cubes, id);
+      deleteObject(this.#cubes, id);
       this.cubeIds.delete(uuid);
     });
   }
 
   clear() {
-    clearObject(this.cubes);
+    clearObject(this.#cubes);
     this.cubeIds.clear();
   }
 
-  updateBuffer() {
-    updateVariable(this.gl, this.program, this.cubes);
+  updateBuffer(forced?: boolean) {
+    updateVariable(this.gl, this.program, this.#cubes, forced);
   }
 
   render(lastRendered: string, isPicking?: boolean) {
@@ -290,7 +295,7 @@ class CubeRenderer extends Renderer {
       36,
       this.gl.UNSIGNED_SHORT,
       0,
-      this.cubes.indices.size
+      this.#cubes.indices.size
     );
     this.vaoExt.bindVertexArrayOES(null);
     return CubeRenderer.id;
