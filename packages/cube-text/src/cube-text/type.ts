@@ -1,4 +1,4 @@
-import { Color } from "@paosder/gl-world";
+import { Color, ScreenConfig } from "@paosder/gl-world";
 
 export interface GradientColor {
   type: "gradient";
@@ -24,6 +24,16 @@ export enum RenderOrder {
   incremental = "incremental",
   line = "line",
 }
+
+export interface SizeConfig {
+  width: number;
+  height: number;
+}
+
+export type CubeTextScreenConfig = ScreenConfig & {
+  textSizeReadOnly: SizeConfig;
+  screenSizeReadOnly: SizeConfig;
+};
 
 export interface TextOptions {
   size: number;

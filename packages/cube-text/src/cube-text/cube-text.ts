@@ -1,10 +1,10 @@
 import { VariableIndex } from "@paosder/gl-variable";
-import { Coordinate, World, ScreenConfig } from "@paosder/gl-world";
+import { Coordinate, World } from "@paosder/gl-world";
 import { VectorMap } from "@paosder/vector-map";
 import { mat4, quat } from "gl-matrix";
 import { determineColor, drawToCanvas } from "./common";
 import CubeRenderer from "./cube";
-import { RenderOrder, TextOptions } from "./type";
+import { CubeTextScreenConfig, RenderOrder, TextOptions } from "./type";
 
 const DEFAULT_THRESHOLD = 10;
 
@@ -45,23 +45,22 @@ export class CubeText {
 
   textCenterPos: Coordinate;
 
-  #textWidth: number;
-
-  #textHeight: number;
-
   protected prevTime: number;
 
   protected renderOrder: RenderOrder;
+
+  protected screenConfig: CubeTextScreenConfig;
 
   onCubeInit?: (cubeInfo: CubeInfo) => void;
 
   onRender?: (
     origin: VectorMap<number, CubeInfo[]>,
-    cubes: VectorMap<string, VariableIndex>
+    cubes: VectorMap<string, VariableIndex>,
+    screenConfig: CubeTextScreenConfig
   ) => boolean;
 
   onRenderCamera?: (
-    cameraOptions: ScreenConfig,
+    screenConfig: CubeTextScreenConfig,
     delta: number,
     time: number
   ) => boolean;
@@ -88,12 +87,25 @@ export class CubeText {
     this.cubeRenderer = new CubeRenderer();
     this.world.addRenderer(this.cubeRenderer);
     this.world.canvas.addEventListener("pointermove", this.pointerMoveEv);
+    this.world.onResize = (width, height) => {
+      this.screenConfig.screenSizeReadOnly.width = width;
+      this.screenConfig.screenSizeReadOnly.height = height;
+    };
 
+    this.screenConfig = {
+      ...this.world.screenConfig,
+      textSizeReadOnly: {
+        width: 0,
+        height: 0,
+      },
+      screenSizeReadOnly: {
+        width: this.world.canvas.clientWidth,
+        height: this.world.canvas.clientHeight,
+      },
+    };
     this.isRunning = false;
     this.prevTime = 0;
     this.textCenterPos = [0, 0, 0];
-    this.#textWidth = 0;
-    this.#textHeight = 0;
     this.threshold = DEFAULT_THRESHOLD;
     this.renderOrder = RenderOrder.static;
     this.originCubes = new VectorMap();
@@ -110,7 +122,11 @@ export class CubeText {
     this.world.clear();
     this.world.removeRenderer();
     this.world.detach();
+    this.world.onResize = undefined;
     this.world.disabled = true;
+    this.onCubeInit = undefined;
+    this.onRender = undefined;
+    this.onRenderCamera = undefined;
   }
 
   drawText(
@@ -232,16 +248,16 @@ export class CubeText {
       this.textCenterPos[0] = centerPosX;
       this.textCenterPos[1] = centerPosY;
     }
-    this.#textWidth = data.width;
-    this.#textHeight = data.height - minY;
+    this.screenConfig.textSizeReadOnly.width = data.width;
+    this.screenConfig.textSizeReadOnly.height = data.height - minY;
   }
 
   get textWidth() {
-    return this.#textWidth;
+    return this.screenConfig.textSizeReadOnly.width;
   }
 
   get textHeight() {
-    return this.#textHeight;
+    return this.screenConfig.textSizeReadOnly.height;
   }
 
   run() {
@@ -256,14 +272,18 @@ export class CubeText {
 
     if (
       this.onRender &&
-      this.onRender(this.originCubes, this.cubeRenderer.cubes)
+      this.onRender(
+        this.originCubes,
+        this.cubeRenderer.cubes,
+        this.screenConfig
+      )
     ) {
       this.cubeRenderer.updateBuffer(true);
     }
 
     if (
       this.onRenderCamera &&
-      this.onRenderCamera(this.world.screenConfig, time - this.prevTime, time)
+      this.onRenderCamera(this.screenConfig, time - this.prevTime, time)
     ) {
       this.world.refreshCamera();
     }

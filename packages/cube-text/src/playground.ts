@@ -7,15 +7,15 @@ wrapper.style.border = "1px solid gray";
 document.body.appendChild(wrapper);
 
 const cubeText = new CubeText(wrapper);
-cubeText.onRenderCamera = (cameraOptions, delta, time) => {
+cubeText.onRenderCamera = (config, delta, time) => {
   const zPos = Math.max(
-    cubeText.textHeight / Math.tan(Math.PI / 8),
-    cubeText.textWidth /
+    config.textSizeReadOnly.height / Math.tan(Math.PI / 8),
+    config.textSizeReadOnly.width /
       Math.tan(Math.PI / 8) /
-      (cubeText.world.canvas.width / cubeText.world.canvas.height)
+      (config.screenSizeReadOnly.width / config.screenSizeReadOnly.height)
   );
 
-  cameraOptions.camera.eye[2] = zPos;
+  config.camera.eye[2] = zPos;
   // cameraOptions.eye[2] = zPos * Math.cos((Math.PI * time * 0.1) / 180);
   // cameraOptions.eye[0] = zPos * Math.sin((Math.PI * time * 0.1) / 180);
   return true;

@@ -40,6 +40,8 @@ export class World {
 
   disabled?: boolean;
 
+  onResize?: (width: number, height: number) => void;
+
   constructor(
     className: string,
     initializer?: (gl: WebGLRenderingContext) => void
@@ -68,7 +70,7 @@ export class World {
     this.mouseX = -1;
     this.mouseY = -1;
 
-    this.onResize = this.onResize.bind(this);
+    this.resize = this.resize.bind(this);
     this.getNextId = this.getNextId.bind(this);
 
     if (initializer) {
@@ -244,7 +246,7 @@ export class World {
 
     if (active && !this.resizeObserver) {
       // active resize observer.
-      this.resizeObserver = new ResizeObserver(this.onResize);
+      this.resizeObserver = new ResizeObserver(this.resize);
       this.resizeObserver.observe(this.canvas.parentElement!);
     } else if (!active && this.resizeObserver) {
       // deactive resize observer.
@@ -254,7 +256,7 @@ export class World {
     this.bAutoResize = active;
   }
 
-  private onResize(entries: any[]) {
+  private resize(entries: any[]) {
     const sizeMap: Map<any, [w: number, h: number, dpr: number]> = new Map();
     entries.forEach((entry) => {
       let width;
@@ -287,6 +289,9 @@ export class World {
 
     this.gl.canvas.width = width / dpr;
     this.gl.canvas.height = height / dpr;
+    if (this.onResize) {
+      this.onResize(this.gl.canvas.width, this.gl.canvas.height);
+    }
     this.setFrameBufferAttachSizes();
     this.refreshProjection();
   }
