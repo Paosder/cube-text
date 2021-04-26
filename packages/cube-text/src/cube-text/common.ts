@@ -1,5 +1,4 @@
 import { Color } from "@paosder/gl-world";
-import { vec4 } from "gl-matrix";
 import { GradientColorArgs, RandomColor } from "./type";
 
 export function drawToCanvas(

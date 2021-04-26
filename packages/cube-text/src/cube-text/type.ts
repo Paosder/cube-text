@@ -30,6 +30,15 @@ export interface SizeConfig {
   height: number;
 }
 
+/**
+ * Screen configuration values of CubeText.
+ *
+ * Note that most attributes are mutable and they will be applied immediately
+ * after return true in a callback to refresh feature.
+ * however, some attribues which has postfix 'ReadOnly' must not modify
+ * or CubeText could potentially mangled in inside.
+ * They aren't actually 'immutable'.
+ */
 export type CubeTextScreenConfig = ScreenConfig & {
   textSizeReadOnly: SizeConfig;
   screenSizeReadOnly: SizeConfig;
