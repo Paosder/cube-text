@@ -13,9 +13,9 @@
       "url": "http://localhost:8080",
       "webRoot": "${workspaceFolder}/packages",
       "sourceMapPathOverrides": {
+        "webpack://@paosder/cube-text/../node_modules/*": "${workspaceFolder}/node_modules/*",
         "webpack://@paosder/cube-text/../*": "${webRoot}/*",
         "webpack://@paosder/cube-text/./src/*": "${webRoot}/cube-text/src/*",
-        "webpack:///./~/*": "${webRoot}/node_modules/*",
       }
     },
     {
@@ -28,7 +28,7 @@
         "webpack:///../../src/cube-text/*": "${webRoot}/cube-text/src/cube-text/*",
         "webpack:///./stories/*": "${webRoot}/react-cube-text/stories/*",
         "webpack:///../../../*": "${webRoot}/*",
-        "webpack:///./~/*": "${webRoot}/node_modules/*",
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
       }
     }
   ]

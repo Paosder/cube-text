@@ -143,7 +143,7 @@ export function addObject(
 ) {
   const objectIndex: Record<string, BufferIndex> = {};
   Object.keys(objectInfo.attrs).forEach((key) => {
-    if (objectInfo.attrs[key].fixed) {
+    if (objectInfo.attrs[key].fixed || !data[key]) {
       // ignore if this is fixed attribute.
       return;
     }

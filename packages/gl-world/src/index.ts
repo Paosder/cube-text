@@ -1,7 +1,7 @@
 import { ResizeObserver } from "@juggle/resize-observer";
 import { VectorMap } from "@paosder/vector-map";
 import { mat4, glMatrix, vec3 } from "gl-matrix";
-import { CameraInfo, ProjectionInfo, Renderer, WorldInfo } from "./type";
+import { Renderer, ScreenConfig, WorldInfo } from "./type";
 
 glMatrix.setMatrixArrayType(Array);
 export * from "./common";
@@ -20,9 +20,7 @@ export class World {
 
   protected lastRendered: string;
 
-  protected camera: CameraInfo;
-
-  protected projection: ProjectionInfo;
+  screenConfig: ScreenConfig;
 
   protected world: WorldInfo;
 
@@ -91,17 +89,20 @@ export class World {
     this.renderers = new VectorMap();
     this.lastRendered = "";
 
-    this.camera = {
-      eye: vec3.fromValues(0, 0, 1),
-      lookAt: vec3.fromValues(0, 0, 0),
-      up: vec3.fromValues(0, 1, 0),
+    this.screenConfig = {
+      camera: {
+        eye: vec3.fromValues(0, 0, 1),
+        lookAt: vec3.fromValues(0, 0, 0),
+        up: vec3.fromValues(0, 1, 0),
+      },
+      projection: {
+        type: "perspective",
+        fov: Math.PI / 4,
+        near: 0.01,
+        far: Infinity,
+      },
     };
-    this.projection = {
-      type: "perspective",
-      fov: Math.PI / 4,
-      near: 0.01,
-      far: Infinity,
-    };
+
     this.world = {
       camera: {
         mat: mat4.identity(mat4.create()),
@@ -290,57 +291,24 @@ export class World {
     this.refreshProjection();
   }
 
-  get eye() {
-    return this.camera.eye;
-  }
-
-  get lookAt() {
-    return this.camera.lookAt;
-  }
-
-  get up() {
-    return this.camera.up;
-  }
-
-  get fov() {
-    if (this.projection.type === "perspective") {
-      return this.projection.fov;
-    }
-    return undefined;
-  }
-
-  get near() {
-    if (this.projection.type === "perspective") {
-      return this.projection.near;
-    }
-    return undefined;
-  }
-
-  get far() {
-    if (this.projection.type === "perspective") {
-      return this.projection.far;
-    }
-    return undefined;
-  }
-
   refreshCamera() {
     mat4.lookAt(
       this.world.camera.mat,
-      this.camera.eye,
-      this.camera.lookAt,
-      this.camera.up
+      this.screenConfig.camera.eye,
+      this.screenConfig.camera.lookAt,
+      this.screenConfig.camera.up
     );
     this.world.camera.isDirty = true;
   }
 
   refreshProjection() {
-    if (this.projection.type === "perspective") {
+    if (this.screenConfig.projection.type === "perspective") {
       mat4.perspective(
         this.world.projection.mat,
-        this.projection.fov,
+        this.screenConfig.projection.fov,
         this.canvas.clientWidth / this.canvas.clientHeight,
-        this.projection.near,
-        this.projection.far
+        this.screenConfig.projection.near,
+        this.screenConfig.projection.far
       );
     } else {
       // TODO: implement.

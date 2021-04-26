@@ -1,7 +1,7 @@
 import { VariableIndex } from "@paosder/gl-variable";
-import { Coordinate, World } from "@paosder/gl-world";
+import { Coordinate, World, ScreenConfig } from "@paosder/gl-world";
 import { VectorMap } from "@paosder/vector-map";
-import { mat4, quat, vec3 } from "gl-matrix";
+import { mat4, quat } from "gl-matrix";
 import { determineColor, drawToCanvas } from "./common";
 import CubeRenderer from "./cube";
 import { RenderOrder, TextOptions } from "./type";
@@ -32,12 +32,6 @@ type CubeInfo = Parameters<CubeRenderer["add"]>[1] & {
   originPos: Coordinate;
 };
 
-interface CameraOptions {
-  eye: vec3;
-  lookAt: vec3;
-  up: vec3;
-}
-
 export class CubeText {
   protected target: HTMLElement;
 
@@ -59,8 +53,6 @@ export class CubeText {
 
   protected renderOrder: RenderOrder;
 
-  cameraOptions: CameraOptions;
-
   onCubeInit?: (cubeInfo: CubeInfo) => void;
 
   onRender?: (
@@ -69,7 +61,7 @@ export class CubeText {
   ) => boolean;
 
   onRenderCamera?: (
-    cameraOptions: CameraOptions,
+    cameraOptions: ScreenConfig,
     delta: number,
     time: number
   ) => boolean;
@@ -96,11 +88,6 @@ export class CubeText {
     this.cubeRenderer = new CubeRenderer();
     this.world.addRenderer(this.cubeRenderer);
     this.world.canvas.addEventListener("pointermove", this.pointerMoveEv);
-    this.cameraOptions = {
-      eye: this.world.eye,
-      lookAt: this.world.lookAt,
-      up: this.world.up,
-    };
 
     this.isRunning = false;
     this.prevTime = 0;
@@ -276,7 +263,7 @@ export class CubeText {
 
     if (
       this.onRenderCamera &&
-      this.onRenderCamera(this.cameraOptions, time - this.prevTime, time)
+      this.onRenderCamera(this.world.screenConfig, time - this.prevTime, time)
     ) {
       this.world.refreshCamera();
     }

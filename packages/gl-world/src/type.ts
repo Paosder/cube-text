@@ -8,6 +8,11 @@ export interface CameraInfo {
 
 export type ProjectionType = "perspective" | "orthogonal";
 
+export interface ScreenConfig {
+  camera: CameraInfo;
+  projection: ProjectionInfo;
+}
+
 export interface Perspective {
   type: "perspective";
   fov: number;

@@ -15,7 +15,7 @@ cubeText.onRenderCamera = (cameraOptions, delta, time) => {
       (cubeText.world.canvas.width / cubeText.world.canvas.height)
   );
 
-  cameraOptions.eye[2] = zPos;
+  cameraOptions.camera.eye[2] = zPos;
   // cameraOptions.eye[2] = zPos * Math.cos((Math.PI * time * 0.1) / 180);
   // cameraOptions.eye[0] = zPos * Math.sin((Math.PI * time * 0.1) / 180);
   return true;
