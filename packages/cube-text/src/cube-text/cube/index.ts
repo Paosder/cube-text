@@ -290,13 +290,15 @@ class CubeRenderer extends Renderer {
       );
     }
 
-    this.instanced.drawElementsInstancedANGLE(
-      this.gl.TRIANGLES,
-      36,
-      this.gl.UNSIGNED_SHORT,
-      0,
-      this.#cubes.indices.size
-    );
+    if (this.#cubes.indices.size > 0) {
+      this.instanced.drawElementsInstancedANGLE(
+        this.gl.TRIANGLES,
+        36,
+        this.gl.UNSIGNED_SHORT,
+        0,
+        this.#cubes.indices.size
+      );
+    }
     this.vaoExt.bindVertexArrayOES(null);
     return CubeRenderer.id;
   }

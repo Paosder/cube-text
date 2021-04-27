@@ -1,4 +1,7 @@
-import { Color, ScreenConfig } from "@paosder/gl-world";
+import type { VariableIndex } from "@paosder/gl-variable";
+import type { Color, Coordinate, ScreenConfig } from "@paosder/gl-world";
+import type { VectorMap } from "@paosder/vector-map";
+import { quat } from "gl-matrix";
 
 export interface GradientColor {
   type: "gradient";
@@ -18,12 +21,6 @@ export interface RandomColor {
 }
 
 export type ColorType = GradientColor | RandomColor;
-
-export enum RenderOrder {
-  static = "static",
-  incremental = "incremental",
-  line = "line",
-}
 
 export interface SizeConfig {
   width: number;
@@ -46,12 +43,45 @@ export type CubeTextScreenConfig = ScreenConfig & {
 
 export interface TextOptions {
   size: number;
+  style: string;
+}
+export interface CubeOptions {
+  size: number;
   margin: number;
-  colors: Array<Color>;
-  colorType: ColorType;
-  overrideAlpha: boolean;
-  renderOrder: RenderOrder;
   align: "left" | "center" | "right";
-  rotate: boolean;
   drawType: "stroke" | "fill";
+}
+
+export interface CubeInfo {
+  id: number;
+  color: Color;
+  position: Coordinate;
+  rotation: number[] | Float32Array;
+  rotationQuat: quat;
+  size: [number];
+}
+
+export interface LifeCycleCallbacks {
+  render: (
+    origin: VectorMap<number, CubeInfo[]>,
+    cubes: VectorMap<string, VariableIndex>,
+    screenConfig: CubeTextScreenConfig,
+    delta: number,
+    time: number
+  ) => boolean;
+  renderCamera: (
+    screenConfig: CubeTextScreenConfig,
+    delta: number,
+    time: number
+  ) => boolean;
+  initCube: (
+    cubeInfo: CubeInfo,
+    position: {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      margin: number;
+    }
+  ) => void;
 }

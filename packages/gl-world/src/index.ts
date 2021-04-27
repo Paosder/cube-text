@@ -1,7 +1,7 @@
 import { ResizeObserver } from "@juggle/resize-observer";
 import { VectorMap } from "@paosder/vector-map";
 import { mat4, glMatrix, vec3 } from "gl-matrix";
-import { Renderer, ScreenConfig, WorldInfo } from "./type";
+import type { Renderer, ScreenConfig, WorldInfo } from "./type";
 
 glMatrix.setMatrixArrayType(Array);
 export * from "./common";
