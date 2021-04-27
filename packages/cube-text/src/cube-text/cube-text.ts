@@ -36,7 +36,7 @@ export class CubeText {
 
   protected originCubes: VectorMap<number, Array<CubeInfo>>;
 
-  protected isRunning: boolean;
+  protected isRunning?: number;
 
   textCenterPos: Coordinate;
 
@@ -92,7 +92,6 @@ export class CubeText {
       renderCamera: new Set(),
       initCube: new Set(),
     };
-    this.isRunning = false;
     this.prevTime = 0;
     this.textCenterPos = [0, 0, 0];
     this.threshold = DEFAULT_THRESHOLD;
@@ -149,7 +148,7 @@ export class CubeText {
   }
 
   destroy() {
-    this.isRunning = false;
+    this.stop();
     this.world.canvas.removeEventListener("pointermove", this.pointerMoveEv);
     this.world.clear();
     this.world.removeRenderer();
@@ -257,7 +256,7 @@ export class CubeText {
             x,
             y,
             width: data.width,
-            height: data.height,
+            height: data.height - minY,
             margin: cubeOptions.margin,
           });
           this.cubeRenderer.add(`${cubeData.id}`, cubeData);
@@ -293,17 +292,28 @@ export class CubeText {
   }
 
   run() {
-    if (this.isRunning) return;
-    this.isRunning = true;
-    requestAnimationFrame(this.render);
+    if (this.isRunning !== undefined) return;
+    const loop = (time: number) => {
+      this.render(time);
+      requestAnimationFrame(loop);
+    };
+    this.isRunning = requestAnimationFrame(loop);
   }
 
   render(time: number) {
-    if (!this.isRunning) {
+    if (this.world.disabled) {
       return;
     }
     const delta = time - this.prevTime;
 
+    if (this.textWidth === 0 || this.textHeight === 0) {
+      /**
+       * Text data is not ready, but render is called.
+       * Executing render callbacks may cause the wrong camera position via zeroed length,
+       * so we have to prevent running it.
+       */
+      return;
+    }
     if (
       this.executeCallback(
         "render",
@@ -323,10 +333,12 @@ export class CubeText {
 
     this.world.render();
     this.prevTime = time;
-    requestAnimationFrame(this.render);
   }
 
   stop() {
-    this.isRunning = false;
+    if (this.isRunning !== undefined) {
+      cancelAnimationFrame(this.isRunning);
+      this.isRunning = undefined;
+    }
   }
 }

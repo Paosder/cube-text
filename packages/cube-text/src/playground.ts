@@ -30,17 +30,17 @@ const cubeText = new CubeText(wrapper);
 //     },
 //   ])
 // );
-// cubeText.register("initCube", randomRotate);
-// cubeText.register(
-//   "initCube",
-//   generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
-// );
-cubeText.register("render", generateRotateTo(3000));
+cubeText.register("initCube", randomRotate);
+cubeText.register(
+  "initCube",
+  generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
+);
+// cubeText.register("render", generateRotateTo(3000));
 cubeText.register("renderCamera", generateFullscreen());
 // cubeText.register("renderCamera", generateRotateZAxis(3000, true));
 // cubeText.register("renderCamera", generateRotateCameraUp(3000, 1, true));
-cubeText.register("renderCamera", generateZoom(3000, 1));
-let drawText = "!";
+// cubeText.register("renderCamera", generateZoom(3000, 1));
+let drawText = "";
 // cubeText.drawText(drawText, { size: 49 });
 
 let i = 1;
@@ -54,7 +54,7 @@ const interval = () => {
     cubeText.drawText(drawText, {
       size: 49 - i,
     });
-    cubeText.run();
+    // cubeText.run();
   } else if (i === 48) {
     cubeText.clearText();
     clearInterval(t);
@@ -62,4 +62,4 @@ const interval = () => {
 };
 const t = setInterval(interval, 30);
 
-// cubeText.run();
+cubeText.run();

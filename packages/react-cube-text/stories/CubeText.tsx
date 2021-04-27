@@ -15,11 +15,10 @@ export interface CubeTextProps {
    * We may modify its reference value and if return true, renderer will refresh its camera matrix.
    * Do not modify reference itself, just modify value via array assignment statement.
    */
-  onRenderCamera?: InstanceType<typeof Renderer>["onRenderCamera"];
 }
 
 export const CubeText = React.forwardRef<Renderer, CubeTextProps>(
-  ({ text, onRenderCamera, ...props }, ref) => {
+  ({ text, ...props }, ref) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<Renderer>();
     useEffect(() => {
@@ -35,8 +34,7 @@ export const CubeText = React.forwardRef<Renderer, CubeTextProps>(
 
     useEffect(() => {
       if (rendererRef.current) {
-        rendererRef.current.onRenderCamera = onRenderCamera;
-        rendererRef.current.drawText(text, 14);
+        rendererRef.current.drawText(text);
       }
     }, [text]);
     return (
