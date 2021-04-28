@@ -3,7 +3,8 @@ import type { LifeCycleCallbacks } from "../type";
 
 export const generateRotateTo = (
   duration: number,
-  rotateTo: quat = quat.identity(quat.create())
+  rotateTo: quat = quat.identity(quat.create()),
+  start = 0
 ): LifeCycleCallbacks["render"] => {
   const tempQuat = quat.create();
   let elapsed = 0;
@@ -14,10 +15,13 @@ export const generateRotateTo = (
     _,
     delta
   ) => {
-    if (duration < elapsed) {
+    if (elapsed > duration + start) {
       return false;
     }
     elapsed = delta + elapsed > duration ? duration : delta + elapsed;
+    if (elapsed < start) {
+      return false;
+    }
     origin.forEach(({ value: cubes }) => {
       // Because cubes are aligned with the y-axis(based with x coordinate),
       // the origin map may hold the number of height keys.

@@ -210,11 +210,15 @@ export class CubeText {
   clearText() {
     // due to Safari's unknown behavior, we have to clear Safari via special ways.
     if (isSafari) {
+      this.world.clear();
       this.drawText(".", defaultTextOptions, {
         size: 0,
       });
     } else {
       this.world.clear();
+      this.drawText(".", defaultTextOptions, {
+        size: 0,
+      });
     }
   }
 

@@ -6,6 +6,8 @@
 
 Render text with customizable cubes using webgl.
 
+# This package is currently Work-In-Progress so API specs may change occasionally. Keep in mind if you use it at the production level.
+
 ## Installation
 
 ```shell

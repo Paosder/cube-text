@@ -34,6 +34,8 @@ export class World {
 
   protected resizeObserver?: ResizeObserver;
 
+  protected isResizing: boolean;
+
   mouseX: number;
 
   mouseY: number;
@@ -48,6 +50,7 @@ export class World {
   ) {
     // create canvas and get gl context.
     this.bAutoResize = false;
+    this.isResizing = false;
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl", {
       // preserveDrawingBuffer: true,
@@ -257,6 +260,11 @@ export class World {
   }
 
   private resize(entries: any[]) {
+    // https://github.com/WICG/resize-observer/issues/38
+    if (this.isResizing) {
+      return;
+    }
+    this.isResizing = true;
     const sizeMap: Map<any, [w: number, h: number, dpr: number]> = new Map();
     entries.forEach((entry) => {
       let width;
@@ -294,6 +302,7 @@ export class World {
     }
     this.setFrameBufferAttachSizes();
     this.refreshProjection();
+    this.isResizing = false;
   }
 
   refreshCamera() {

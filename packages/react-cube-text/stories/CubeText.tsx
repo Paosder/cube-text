@@ -1,5 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import { CubeText as Renderer } from "@paosder/cube-text";
+import {
+  CubeText as Renderer,
+  generateFullscreen,
+  generateGradientColor,
+  generateRotateCameraUp,
+  generateRotateTo,
+  generateRotateZAxis,
+  randomRotate,
+} from "@paosder/cube-text";
 
 export interface CubeTextProps {
   /**
@@ -10,11 +18,14 @@ export interface CubeTextProps {
    * font size.
    */
   size: number;
-  /**
-   * Camera callback function when cubeText renders before.
-   * We may modify its reference value and if return true, renderer will refresh its camera matrix.
-   * Do not modify reference itself, just modify value via array assignment statement.
-   */
+
+  onInit?: string;
+
+  onRender?: string;
+
+  onRenderCamera?: string;
+
+  height: number;
 }
 
 export const CubeText = React.forwardRef<Renderer, CubeTextProps>(
@@ -34,15 +45,20 @@ export const CubeText = React.forwardRef<Renderer, CubeTextProps>(
 
     useEffect(() => {
       if (rendererRef.current) {
+        rendererRef.current.register("renderCamera", generateFullscreen());
+        rendererRef.current.register(
+          "initCube",
+          generateGradientColor([1, 0, 0, 1], [0, 1, 1, 1])
+        );
+        rendererRef.current.register("initCube", randomRotate);
+      }
+    }, []);
+
+    useEffect(() => {
+      if (rendererRef.current) {
         rendererRef.current.drawText(text);
       }
     }, [text]);
-    return (
-      <div
-        ref={wrapperRef}
-        style={{ position: "relative", height: "200px" }}
-        {...props}
-      />
-    );
+    return <div ref={wrapperRef} style={{ position: "relative" }} {...props} />;
   }
 );

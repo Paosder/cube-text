@@ -5,15 +5,13 @@ import { CubeText, CubeTextProps } from "./CubeText";
 
 export const Template = (args) => <CubeText {...args} />;
 
-# Button
+# CubeText
 
-Some **markdown** description, or whatever you want.2
-
-# Test
+# Example
 
 <Canvas>
-  <Story name="CubeText" height="400px" args={{ text: "test" }}>
-    {(args) => <CubeText {...args} />}
+  <Story name="CubeText" max-height="400px" args={{ text: "Cube." }}>
+    {(args) => <CubeText {...args} style={{ height: "400px" }} />}
   </Story>
 </Canvas>
 

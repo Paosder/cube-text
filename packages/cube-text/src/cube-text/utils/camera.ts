@@ -1,9 +1,15 @@
 import type { LifeCycleCallbacks } from "../type";
 
 export const generateFullscreen = (
-  scale = 1
+  scale = 1,
+  start = 0
 ): LifeCycleCallbacks["renderCamera"] => {
-  const fullScreen: LifeCycleCallbacks["renderCamera"] = (config) => {
+  let elapsed = 0;
+  const fullScreen: LifeCycleCallbacks["renderCamera"] = (config, delta) => {
+    if (elapsed < start) {
+      elapsed += delta;
+      return false;
+    }
     if (config.projection.type === "perspective") {
       const fovy = config.projection.fov * 0.5;
       const zPos = Math.max(
@@ -27,17 +33,22 @@ export const generateFullscreen = (
 export const generateZoom = (
   duration: number,
   targetRatio: number,
-  zoomDirection = 1
+  zoomDirection = 1,
+  start = 0
 ): LifeCycleCallbacks["renderCamera"] => {
   let elapsed = 0;
   const zoom: LifeCycleCallbacks["renderCamera"] = (config, delta) => {
-    if (elapsed > duration) {
+    if (elapsed > duration + start) {
       return false;
     }
     elapsed += delta;
+    if (elapsed < start) {
+      return false;
+    }
+    const elapsedAfterStart = elapsed - start;
     if (config.projection.type === "perspective") {
       const fovy = config.projection.fov * 0.5;
-      const zPos = Math.max(
+      const zDistance = Math.max(
         config.textSizeReadOnly.height / Math.tan(fovy),
         config.textSizeReadOnly.width /
           Math.tan(fovy) /
@@ -46,21 +57,21 @@ export const generateZoom = (
       const norm = Math.sqrt(
         config.camera.eye[0] ** 2 + config.camera.eye[2] ** 2
       );
-      config.camera.eye[0] *= zPos / norm;
-      config.camera.eye[2] *= zPos / norm;
+      config.camera.eye[0] *= zDistance / norm;
+      config.camera.eye[2] *= zDistance / norm;
     }
     if (zoomDirection > 0) {
       // zoom out
-      config.camera.eye[0] *= targetRatio * (elapsed / duration);
-      config.camera.eye[2] *= targetRatio * (elapsed / duration);
+      config.camera.eye[0] *= targetRatio * (elapsedAfterStart / duration);
+      config.camera.eye[2] *= targetRatio * (elapsedAfterStart / duration);
     } else {
       // zoom in
       config.camera.eye[0] =
-        config.camera.eye[0] * ((duration - elapsed) / duration) +
-        config.camera.eye[0] * targetRatio * (elapsed / duration);
+        config.camera.eye[0] * ((duration - elapsedAfterStart) / duration) +
+        config.camera.eye[0] * targetRatio * (elapsedAfterStart / duration);
       config.camera.eye[2] =
-        config.camera.eye[2] * ((duration - elapsed) / duration) +
-        config.camera.eye[2] * targetRatio * (elapsed / duration);
+        config.camera.eye[2] * ((duration - elapsedAfterStart) / duration) +
+        config.camera.eye[2] * targetRatio * (elapsedAfterStart / duration);
     }
     return true;
   };
