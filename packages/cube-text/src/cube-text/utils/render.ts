@@ -82,3 +82,5 @@ export const generateRewindToOriginPosition = (duration: number, start = 0) => {
   };
   return rewindToOriginPosition;
 };
+
+export const generateNoisyPosition = (ratio: number = 1) => {};

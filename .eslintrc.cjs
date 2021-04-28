@@ -45,6 +45,7 @@ module.exports = {
     "no-param-reassign": "off",
     "no-shadow": "off", // disable to remove bug.
     "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-inferrable-types": "off",
   },
   ignorePatterns: [
     "node_modules",

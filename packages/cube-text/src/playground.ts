@@ -48,10 +48,7 @@ const cubeText = new CubeText(wrapper2);
 //   ])
 // );
 cubeText.register("initCube", randomRotate);
-cubeText.register(
-  "initCube",
-  generateRandomPosition([-1000, -1000, -100], [100, 100, 100])
-);
+cubeText.register("initCube", generateRandomPosition([-1, -1, -1], [1, 1, 1]));
 cubeText.register(
   "initCube",
   generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
