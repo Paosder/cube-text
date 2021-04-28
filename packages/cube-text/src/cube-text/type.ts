@@ -57,8 +57,13 @@ export interface CubeInfo {
   color: Color;
   position: Coordinate;
   rotation: number[] | Float32Array;
-  rotationQuat: quat;
   size: [number];
+  origin: {
+    position: Coordinate;
+    rotation: quat;
+    size: [number];
+    color: Color;
+  };
 }
 
 export interface LifeCycleCallbacks {

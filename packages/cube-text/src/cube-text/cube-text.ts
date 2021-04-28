@@ -253,8 +253,13 @@ export class CubeText {
             color: [0, 0, 0, alpha / 256],
             position: [x, y, 0], // current position.
             size: [cubeOptions.size],
-            rotationQuat,
             rotation: mat4.fromQuat(mat4.create(), rotationQuat),
+            origin: {
+              color: [0, 0, 0, alpha / 256],
+              position: [x, y, 0],
+              size: [cubeOptions.size],
+              rotation: rotationQuat,
+            },
           };
           this.executeCallback("initCube", cubeData, {
             x,

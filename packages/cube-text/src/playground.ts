@@ -3,12 +3,16 @@ import {
   generateFullscreen,
   generateGradientColor,
   generateRandomColor,
+  generateRandomPosition,
   generateRotateCameraUp,
   generateRotateZAxis,
   generateZoom,
   randomRotate,
 } from "./cube-text";
-import { generateRotateTo } from "./cube-text/utils/render";
+import {
+  generateRewindToOriginPosition,
+  generateRotateTo,
+} from "./cube-text/utils/render";
 
 const style = document.createElement("style");
 document.body.style.margin = "0";
@@ -46,15 +50,20 @@ const cubeText = new CubeText(wrapper2);
 cubeText.register("initCube", randomRotate);
 cubeText.register(
   "initCube",
+  generateRandomPosition([-1000, -1000, -100], [100, 100, 100])
+);
+cubeText.register(
+  "initCube",
   generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
 );
 // cubeText.register("render", generateRotateTo(3000));
+cubeText.register("render", generateRewindToOriginPosition(3000));
 cubeText.register("renderCamera", generateFullscreen());
-// cubeText.register("renderCamera", generateRotateZAxis(3000, true));
+cubeText.register("renderCamera", generateRotateZAxis(3000));
 // cubeText.register("renderCamera", generateRotateCameraUp(3000, 1, true));
 cubeText.register("renderCamera", generateZoom(3000, 1));
 const drawText = "Hello CubeText!";
-cubeText.drawText(drawText, { size: 10 });
+cubeText.drawText(drawText, { size: 24 });
 
 // let i = 1;
 // const arr = "Hello CubeText!".split("");

@@ -1,4 +1,4 @@
-import { Color } from "@paosder/gl-world";
+import { Color, Coordinate } from "@paosder/gl-world";
 import { mat4, quat } from "gl-matrix";
 import type { CubeInfo, LifeCycleCallbacks } from "../type";
 
@@ -34,8 +34,29 @@ export const generateRandomColor = (
 export const randomRotate: LifeCycleCallbacks["initCube"] = (
   cubeInfo: CubeInfo
 ) => {
-  quat.random(cubeInfo.rotationQuat);
-  mat4.fromQuat(cubeInfo.rotation as mat4, cubeInfo.rotationQuat);
+  quat.random(cubeInfo.origin.rotation);
+  mat4.fromQuat(cubeInfo.rotation as mat4, cubeInfo.origin.rotation);
+};
+
+export const generateRandomPosition = (
+  min: Coordinate,
+  max: Coordinate,
+  basis = false
+) => {
+  const length = min.map((el, i) => {
+    return (max[i] - el) / 2;
+  });
+  const randomPosition: LifeCycleCallbacks["initCube"] = (
+    cubeInfo: CubeInfo
+  ) => {
+    for (let i = 0; i < 3; i += 1) {
+      cubeInfo.position[i] =
+        (basis ? cubeInfo.position[i] : 0) +
+        Math.random() * length[i] -
+        length[i] * 0.5;
+    }
+  };
+  return randomPosition;
 };
 
 export const generateGradientColor = (
