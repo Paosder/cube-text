@@ -13,6 +13,7 @@
   "files": [
     "dist"
   ],
+  "private": false,
   "scripts": {
     "prepack": "yarn clean && yarn build",
     "clean": "rimraf dist && rimraf tsconfig.tsbuildinfo",
