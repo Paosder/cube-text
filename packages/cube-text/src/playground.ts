@@ -4,15 +4,11 @@ import {
   generateGradientColor,
   generateRandomColor,
   generateRandomPosition,
-  generateRotateCameraUp,
-  generateRotateZAxis,
+  generateRotateY,
   generateZoom,
   randomRotate,
 } from "./cube-text";
-import {
-  generateRewindToOriginPosition,
-  generateRotateTo,
-} from "./cube-text/utils/render";
+import { generateRewindToOrigin } from "./cube-text/plugins/render";
 
 const style = document.createElement("style");
 document.body.style.margin = "0";
@@ -34,51 +30,31 @@ wrapper2.style.height = "100%";
 wrapper.appendChild(wrapper2);
 
 const cubeText = new CubeText(wrapper2);
-// cubeText.register(
-//   "initCube",
-//   generateRandomColor([
-//     {
-//       color: [0, 0, 0, 1],
-//       ratio: 0.5,
-//     },
-//     {
-//       color: [1, 0, 0, 1],
-//       ratio: 0.5,
-//     },
-//   ])
-// );
-cubeText.register("initCube", randomRotate);
-cubeText.register("initCube", generateRandomPosition([-1, -1, -1], [1, 1, 1]));
+cubeText.register("init-cube", generateRandomColor());
+cubeText.register("init-cube", randomRotate);
 cubeText.register(
-  "initCube",
-  generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
+  "init-cube",
+  generateRandomPosition({ basis: true, min: [-1000, -1000, -1000] })
 );
-// cubeText.register("render", generateRotateTo(3000));
-cubeText.register("render", generateRewindToOriginPosition(3000));
-cubeText.register("renderCamera", generateFullscreen());
-cubeText.register("renderCamera", generateRotateZAxis(3000));
-// cubeText.register("renderCamera", generateRotateCameraUp(3000, 1, true));
-cubeText.register("renderCamera", generateZoom(3000, 1));
+cubeText.register("init-cube", generateGradientColor());
+cubeText.register("render", generateRewindToOrigin({ duration: 5000 }));
+cubeText.register("render-camera", generateFullscreen());
+cubeText.register(
+  "render-camera",
+  generateRotateY({
+    duration: 5000,
+    loop: false,
+  })
+);
+cubeText.register(
+  "render-camera",
+  generateZoom({
+    init: 0.1,
+    targetRatio: 1,
+    duration: 5000,
+  })
+);
 const drawText = "Hello CubeText!";
-cubeText.drawText(drawText, { size: 24 });
-
-// let i = 1;
-// const arr = "Hello CubeText!".split("");
-// const interval = () => {
-//   if (i < 48) {
-//     if (i <= arr.length) {
-//       drawText += arr[i - 1];
-//     }
-//     i += 1;
-//     cubeText.drawText(drawText, {
-//       size: 49 - i,
-//     });
-//     // cubeText.run();
-//   } else if (i === 48) {
-//     cubeText.clearText();
-//     clearInterval(t);
-//   }
-// };
-// const t = setInterval(interval, 30);
+cubeText.drawText(drawText, { size: 16 }, { size: 1, margin: 1 });
 
 cubeText.run();

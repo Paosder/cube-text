@@ -5,11 +5,12 @@
     "email": "denjaraos@gmail.com",
     "url": "https://github.com/Paosder"
   },
-  "version": "0.1.0",
+  "version": "0.1.1-alpha.3",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "private": false,
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -27,6 +28,7 @@
     "acorn": "8.0.1"
   },
   "dependencies": {
-    "@paosder/cube-text": "^0.1.0"
-  }
+    "@paosder/cube-text": "^0.1.1-alpha.3"
+  },
+  "gitHead": "2b7a1265535004c4b675c0473eb541a6851ef967"
 }

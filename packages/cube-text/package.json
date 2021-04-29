@@ -5,7 +5,7 @@
     "email": "denjaraos@gmail.com",
     "url": "https://github.com/Paosder"
   },
-  "version": "0.1.0",
+  "version": "0.1.1-alpha.3",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/cube-text/index.d.ts",
@@ -26,10 +26,12 @@
   "files": [
     "dist"
   ],
+  "private": false,
   "dependencies": {
-    "@paosder/gl-variable": "^0.1.0",
-    "@paosder/gl-world": "^0.1.0",
+    "@paosder/gl-variable": "^0.1.1-alpha.3",
+    "@paosder/gl-world": "^0.1.1-alpha.3",
     "@paosder/vector-map": "^0.2.0",
     "gl-matrix": "^3.3.0"
-  }
+  },
+  "gitHead": "2b7a1265535004c4b675c0473eb541a6851ef967"
 }

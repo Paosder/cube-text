@@ -38,6 +38,7 @@ export interface SizeConfig {
  */
 export type CubeTextScreenConfig = ScreenConfig & {
   textSizeReadOnly: SizeConfig;
+  computedSizeReadOnly: SizeConfig;
   screenSizeReadOnly: SizeConfig;
 };
 
@@ -66,7 +67,7 @@ export interface CubeInfo {
   };
 }
 
-export interface LifeCycleCallbacks {
+export interface LifeCyclePlugin {
   render: (
     origin: VectorMap<number, CubeInfo[]>,
     cubes: VectorMap<string, VariableIndex>,
@@ -74,12 +75,12 @@ export interface LifeCycleCallbacks {
     delta: number,
     time: number
   ) => boolean;
-  renderCamera: (
+  "render-camera": (
     screenConfig: CubeTextScreenConfig,
     delta: number,
     time: number
   ) => boolean;
-  initCube: (
+  "init-cube": (
     cubeInfo: CubeInfo,
     position: {
       x: number;

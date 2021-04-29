@@ -16,8 +16,11 @@ export function drawToCanvas(
   textCtx.fillStyle = "black";
   const measured = textCtx.measureText(text);
   // Because of italic, we need to calculate more precisely via the bounding box.
-  canvas.width = Math.ceil(
-    measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight
+  // ! Chrome and Safari doesn't give same width value related with actualBoundingBox,
+  // ! therefore we have to choose more bigger item.
+  canvas.width = Math.max(
+    Math.ceil(measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight),
+    Math.ceil(measured.width)
   );
 
   // re-initialize context2d.

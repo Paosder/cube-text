@@ -7,7 +7,7 @@ import {
   CubeInfo,
   CubeOptions,
   CubeTextScreenConfig,
-  LifeCycleCallbacks,
+  LifeCyclePlugin,
   TextOptions,
 } from "./type";
 
@@ -22,7 +22,7 @@ export const defaultTextOptions: TextOptions = {
 
 export const defaultCubeOptions: CubeOptions = {
   size: 1,
-  margin: 2,
+  margin: 1,
   align: "center",
   drawType: "fill",
 };
@@ -44,9 +44,9 @@ export class CubeText {
 
   screenConfig: CubeTextScreenConfig;
 
-  protected lifeCycleCallback: Record<
-    keyof LifeCycleCallbacks,
-    Set<LifeCycleCallbacks[keyof LifeCycleCallbacks]>
+  protected lifeCyclePlugin: Record<
+    keyof LifeCyclePlugin,
+    Set<LifeCyclePlugin[keyof LifeCyclePlugin]>
   >;
 
   threshold: number;
@@ -82,15 +82,19 @@ export class CubeText {
         width: 0,
         height: 0,
       },
+      computedSizeReadOnly: {
+        width: 0,
+        height: 0,
+      },
       screenSizeReadOnly: {
         width: this.world.canvas.clientWidth,
         height: this.world.canvas.clientHeight,
       },
     };
-    this.lifeCycleCallback = {
+    this.lifeCyclePlugin = {
       render: new Set(),
-      renderCamera: new Set(),
-      initCube: new Set(),
+      "render-camera": new Set(),
+      "init-cube": new Set(),
     };
     this.prevTime = 0;
     this.textCenterPos = [0, 0, 0];
@@ -104,36 +108,36 @@ export class CubeText {
   }
 
   /**
-   * register life cycle callback function.
+   * register life cycle plugin function.
    */
-  register<K extends keyof LifeCycleCallbacks>(
+  register<K extends keyof LifeCyclePlugin>(
     type: K,
-    callback: LifeCycleCallbacks[K]
+    plugin: LifeCyclePlugin[K]
   ) {
-    this.lifeCycleCallback[type].add(callback);
+    this.lifeCyclePlugin[type].add(plugin);
   }
 
   /**
-   * unregister life cycle callback function.
+   * unregister life cycle plugin function.
    */
-  unregister<K extends keyof LifeCycleCallbacks>(
+  unregister<K extends keyof LifeCyclePlugin>(
     type: K,
-    callback?: LifeCycleCallbacks[K]
+    plugin?: LifeCyclePlugin[K]
   ) {
-    if (!callback) {
-      // if callback is undefined, remove all callbacks in type.
-      this.lifeCycleCallback[type].clear();
+    if (!plugin) {
+      // if plugin is undefined, remove all plugins in type.
+      this.lifeCyclePlugin[type].clear();
     } else {
-      this.lifeCycleCallback[type].delete(callback);
+      this.lifeCyclePlugin[type].delete(plugin);
     }
   }
 
-  private executeCallback<K extends keyof LifeCycleCallbacks>(
+  private executePlugin<K extends keyof LifeCyclePlugin>(
     type: K,
-    ...args: Parameters<LifeCycleCallbacks[K]>
+    ...args: Parameters<LifeCyclePlugin[K]>
   ): boolean {
     let result = false;
-    this.lifeCycleCallback[type].forEach((callback) => {
+    this.lifeCyclePlugin[type].forEach((callback) => {
       // typescript issue.
       // TODO: better way to define this behavior.
       // https://github.com/Microsoft/TypeScript/issues/4130#issuecomment-303486552
@@ -154,11 +158,11 @@ export class CubeText {
     this.world.removeRenderer();
     this.world.detach();
     this.world.onResize = undefined;
-    (Object.keys(this.lifeCycleCallback) as Array<
-      keyof LifeCycleCallbacks
-    >).forEach((key) => {
-      this.lifeCycleCallback[key].clear();
-    });
+    (Object.keys(this.lifeCyclePlugin) as Array<keyof LifeCyclePlugin>).forEach(
+      (key) => {
+        this.lifeCyclePlugin[key].clear();
+      }
+    );
     this.world.disabled = true;
   }
 
@@ -224,8 +228,14 @@ export class CubeText {
 
   protected initCube(data: ImageData, cubeOptions: CubeOptions) {
     // group cubes with y-level.
-    const centerPosX = data.width * 0.5 * cubeOptions.margin;
-    let centerPosY = data.height * 0.5 * cubeOptions.margin;
+    const totalWidth =
+      data.width * (cubeOptions.size + cubeOptions.margin) - cubeOptions.margin;
+    let totalHeight =
+      data.height * (cubeOptions.size + cubeOptions.margin) -
+      cubeOptions.margin;
+
+    const centerPosX = totalWidth * 0.5;
+    const centerPosY = 0;
     let minY = -1;
 
     for (let i = data.height - 1; i >= 0; i -= 1) {
@@ -234,14 +244,21 @@ export class CubeText {
         if (alpha > this.threshold) {
           // exceeds threshold.
           // default: align-left.
-          let x = j * cubeOptions.margin;
+          let x =
+            j * (cubeOptions.margin + cubeOptions.size) +
+            cubeOptions.size * 0.5;
           if (minY === -1) {
             // minimum coordinate of Y is not always starts with 0.
             // Therefore we should add its start coord.
             minY = -i + data.height;
-            centerPosY += minY;
+            totalHeight -=
+              minY * (cubeOptions.size + cubeOptions.margin) -
+              cubeOptions.margin;
           }
-          const y = (-i + data.height) * cubeOptions.margin - centerPosY;
+          const y =
+            -i * (cubeOptions.margin + cubeOptions.size) +
+            cubeOptions.size * 0.5 +
+            totalHeight * 0.5;
           if (cubeOptions.align === "center") {
             x -= centerPosX;
           } else if (cubeOptions.align === "right") {
@@ -249,11 +266,14 @@ export class CubeText {
           }
           const rotationQuat = quat.identity(quat.create());
           const cubeData: CubeInfo = {
+            // for each attributes
             id: this.world.getNextId(),
             color: [0, 0, 0, alpha / 256],
             position: [x, y, 0], // current position.
             size: [cubeOptions.size],
             rotation: mat4.fromQuat(mat4.create(), rotationQuat),
+            // end ----
+            // for save origin data.
             origin: {
               color: [0, 0, 0, alpha / 256],
               position: [x, y, 0],
@@ -261,7 +281,7 @@ export class CubeText {
               rotation: rotationQuat,
             },
           };
-          this.executeCallback("initCube", cubeData, {
+          this.executePlugin("init-cube", cubeData, {
             x,
             y,
             width: data.width,
@@ -290,6 +310,8 @@ export class CubeText {
     }
     this.screenConfig.textSizeReadOnly.width = data.width;
     this.screenConfig.textSizeReadOnly.height = data.height - minY;
+    this.screenConfig.computedSizeReadOnly.width = totalWidth;
+    this.screenConfig.computedSizeReadOnly.height = totalHeight;
   }
 
   get textWidth() {
@@ -324,7 +346,7 @@ export class CubeText {
       return;
     }
     if (
-      this.executeCallback(
+      this.executePlugin(
         "render",
         this.originCubes,
         this.cubeRenderer.cubes,
@@ -336,7 +358,7 @@ export class CubeText {
       this.cubeRenderer.updateBuffer(true);
     }
 
-    if (this.executeCallback("renderCamera", this.screenConfig, delta, time)) {
+    if (this.executePlugin("render-camera", this.screenConfig, delta, time)) {
       this.world.refreshCamera();
     }
 
