@@ -50,20 +50,24 @@ const cubeText = new CubeText(wrapper2);
 //   ])
 // );
 cubeText.register("init-cube", randomRotate);
-cubeText.register("init-cube", generateRandomPosition([-1, -1, -1], [1, 1, 1]));
+cubeText.register(
+  "init-cube",
+  generateRandomPosition([-1000, -1000, -1000], [1000, 1000, 1000], true)
+);
 cubeText.register(
   "init-cube",
   generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
 );
 // cubeText.register("render", generateRotateTo(3000));
-cubeText.register("render", generateRotateCube(1, 1000, true, true));
+// cubeText.register("render", generateRotateCube(4, 3000, true, true));
 cubeText.register("render", generateRewindToOrigin(3000));
 cubeText.register("render-camera", generateFullscreen());
-cubeText.register("render-camera", generateRotateY(3000));
+// cubeText.register("render-camera", generateRotateY(3000));
 // cubeText.register("render-camera", generateRotateCameraUp(3000, 1, true));
-cubeText.register("render-camera", generateZoom(3000, 1));
+// cubeText.register("render-camera", generateZoom(3000, 1));
+// cubeText.register("render", generateRotateCube(1, 1000, true, true));
 const drawText = "Hello CubeText!";
-cubeText.drawText(drawText, { size: 24 });
+cubeText.drawText(drawText, { size: 12 }, { size: 2, margin: 2 });
 
 // let i = 1;
 // const arr = "Hello CubeText!".split("");

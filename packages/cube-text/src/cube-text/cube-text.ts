@@ -22,7 +22,7 @@ export const defaultTextOptions: TextOptions = {
 
 export const defaultCubeOptions: CubeOptions = {
   size: 1,
-  margin: 2,
+  margin: 1,
   align: "center",
   drawType: "fill",
 };
@@ -79,6 +79,10 @@ export class CubeText {
     this.screenConfig = {
       ...this.world.screenConfig,
       textSizeReadOnly: {
+        width: 0,
+        height: 0,
+      },
+      computedSizeReadOnly: {
         width: 0,
         height: 0,
       },
@@ -224,8 +228,14 @@ export class CubeText {
 
   protected initCube(data: ImageData, cubeOptions: CubeOptions) {
     // group cubes with y-level.
-    const centerPosX = data.width * 0.5 * cubeOptions.margin;
-    let centerPosY = data.height * 0.5 * cubeOptions.margin;
+    const totalWidth =
+      data.width * (cubeOptions.size + cubeOptions.margin) - cubeOptions.margin;
+    let totalHeight =
+      data.height * (cubeOptions.size + cubeOptions.margin) -
+      cubeOptions.margin;
+
+    const centerPosX = totalWidth * 0.5;
+    const centerPosY = 0;
     let minY = -1;
 
     for (let i = data.height - 1; i >= 0; i -= 1) {
@@ -234,14 +244,21 @@ export class CubeText {
         if (alpha > this.threshold) {
           // exceeds threshold.
           // default: align-left.
-          let x = j * cubeOptions.margin;
+          let x =
+            (j - 1) * (cubeOptions.margin + cubeOptions.size) +
+            cubeOptions.size * 0.5;
           if (minY === -1) {
             // minimum coordinate of Y is not always starts with 0.
             // Therefore we should add its start coord.
             minY = -i + data.height;
-            centerPosY += minY;
+            totalHeight -=
+              minY * (cubeOptions.size + cubeOptions.margin) -
+              cubeOptions.margin;
           }
-          const y = (-i + data.height) * cubeOptions.margin - centerPosY;
+          const y =
+            -(i - 1) * (cubeOptions.margin + cubeOptions.size) +
+            cubeOptions.size * 0.5 +
+            totalHeight * 0.5;
           if (cubeOptions.align === "center") {
             x -= centerPosX;
           } else if (cubeOptions.align === "right") {
@@ -249,11 +266,14 @@ export class CubeText {
           }
           const rotationQuat = quat.identity(quat.create());
           const cubeData: CubeInfo = {
+            // for each attributes
             id: this.world.getNextId(),
             color: [0, 0, 0, alpha / 256],
             position: [x, y, 0], // current position.
             size: [cubeOptions.size],
             rotation: mat4.fromQuat(mat4.create(), rotationQuat),
+            // end ----
+            // for save origin data.
             origin: {
               color: [0, 0, 0, alpha / 256],
               position: [x, y, 0],
@@ -290,6 +310,8 @@ export class CubeText {
     }
     this.screenConfig.textSizeReadOnly.width = data.width;
     this.screenConfig.textSizeReadOnly.height = data.height - minY;
+    this.screenConfig.computedSizeReadOnly.width = totalWidth;
+    this.screenConfig.computedSizeReadOnly.height = totalHeight;
   }
 
   get textWidth() {

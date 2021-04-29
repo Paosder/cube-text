@@ -49,9 +49,10 @@ export const generateRandomPosition = (
   const randomPosition: LifeCyclePlugin["init-cube"] = (cubeInfo: CubeInfo) => {
     for (let i = 0; i < 3; i += 1) {
       cubeInfo.position[i] =
-        (basis ? cubeInfo.position[i] : 0) +
-        Math.random() * length[i] -
-        length[i] * 0.5;
+        (basis
+          ? cubeInfo.position[i] + Math.random() * length[i] - length[i] * 0.5
+          : (max[i] + min[i]) * 0.5) +
+        Math.random() * length[i] * 0.5;
     }
   };
   return randomPosition;
@@ -64,7 +65,8 @@ export const generateGradientColor = (
 ) => {
   const gradientColor: LifeCyclePlugin["init-cube"] = (cubeInfo, position) => {
     const xRatio =
-      (position.x / position.margin + position.width * 0.5) / position.width;
+      (position.x / (position.margin + 1) + position.width * 0.5) /
+      position.width;
     if (overrideAlpha) {
       // override all.
       cubeInfo.color = color1.map(

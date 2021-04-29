@@ -38,6 +38,7 @@ export interface SizeConfig {
  */
 export type CubeTextScreenConfig = ScreenConfig & {
   textSizeReadOnly: SizeConfig;
+  computedSizeReadOnly: SizeConfig;
   screenSizeReadOnly: SizeConfig;
 };
 

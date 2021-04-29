@@ -1,4 +1,19 @@
-import type { LifeCyclePlugin } from "../type";
+import type { CubeTextScreenConfig, LifeCyclePlugin } from "../type";
+
+export const computeZDistance = (config: CubeTextScreenConfig) => {
+  if (config.projection.type === "perspective") {
+    const fovy = config.projection.fov * 0.5;
+    const f =
+      config.screenSizeReadOnly.width / config.screenSizeReadOnly.height;
+    const zDistance = Math.max(
+      (config.computedSizeReadOnly.height / Math.tan(fovy)) * 0.5,
+      (config.computedSizeReadOnly.width / (Math.tan(fovy) * f)) * 0.5
+    );
+    return zDistance;
+  }
+  // TODO: orthogonal view.
+  return 0;
+};
 
 export const generateFullscreen = (
   scale: number = 1,
@@ -11,18 +26,12 @@ export const generateFullscreen = (
       return false;
     }
     if (config.projection.type === "perspective") {
-      const fovy = config.projection.fov * 0.5;
-      const zPos = Math.max(
-        config.textSizeReadOnly.height / Math.tan(fovy),
-        config.textSizeReadOnly.width /
-          Math.tan(fovy) /
-          (config.screenSizeReadOnly.width / config.screenSizeReadOnly.height)
-      );
+      const zDistance = computeZDistance(config);
       const norm = Math.sqrt(
         config.camera.eye[0] ** 2 + config.camera.eye[2] ** 2
       );
-      config.camera.eye[0] *= (zPos * scale) / norm;
-      config.camera.eye[2] *= (zPos * scale) / norm;
+      config.camera.eye[0] *= (zDistance * scale) / norm;
+      config.camera.eye[2] *= (zDistance * scale) / norm;
       return true;
     }
     return false;
@@ -47,13 +56,7 @@ export const generateZoom = (
     }
     const elapsedAfterStart = elapsed - start;
     if (config.projection.type === "perspective") {
-      const fovy = config.projection.fov * 0.5;
-      const zDistance = Math.max(
-        config.textSizeReadOnly.height / Math.tan(fovy),
-        config.textSizeReadOnly.width /
-          Math.tan(fovy) /
-          (config.screenSizeReadOnly.width / config.screenSizeReadOnly.height)
-      );
+      const zDistance = computeZDistance(config);
       const norm = Math.sqrt(
         config.camera.eye[0] ** 2 + config.camera.eye[2] ** 2
       );
