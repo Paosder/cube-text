@@ -63,6 +63,7 @@
     "dev:webpack": "lerna run dev:webpack --stream --parallel",
     "lint": "lerna run lint --stream --parallel",
     "prepare": "husky install",
-    "prepublishOnly": "yarn clean && yarn build"
+    "prepublishOnly": "yarn clean && yarn build",
+    "publish:all": "lerna publish"
   }
 }

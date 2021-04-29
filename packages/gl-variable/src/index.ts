@@ -302,6 +302,9 @@ export function updateVariable(
   forced?: boolean
 ) {
   Object.keys(variable.attrs).forEach((k) => {
+    if (variable.attrs[k].fixed) {
+      return;
+    }
     if (variable.attrs[k].isDirty || forced) {
       variable.attrs[k].isDirty = true;
       updateAttribute(gl, program, variable.attrs[k]);
