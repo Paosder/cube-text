@@ -245,7 +245,7 @@ export class CubeText {
           // exceeds threshold.
           // default: align-left.
           let x =
-            (j - 1) * (cubeOptions.margin + cubeOptions.size) +
+            j * (cubeOptions.margin + cubeOptions.size) +
             cubeOptions.size * 0.5;
           if (minY === -1) {
             // minimum coordinate of Y is not always starts with 0.

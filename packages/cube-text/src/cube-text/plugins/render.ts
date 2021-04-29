@@ -1,7 +1,7 @@
 import { mat4, quat } from "gl-matrix";
 import type { LifeCyclePlugin } from "../type";
 
-export const generateRotateTo = (
+export const generateRotateCubeTo = (
   duration: number,
   rotateTo: quat = quat.identity(quat.create()),
   start: number = 0

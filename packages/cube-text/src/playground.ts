@@ -13,7 +13,6 @@ import {
   generateNoisy,
   generateRewindToOrigin,
   generateRotateCube,
-  generateRotateTo,
 } from "./cube-text/plugins/render";
 
 const style = document.createElement("style");
@@ -60,14 +59,14 @@ cubeText.register(
 );
 // cubeText.register("render", generateRotateTo(3000));
 // cubeText.register("render", generateRotateCube(4, 3000, true, true));
-cubeText.register("render", generateRewindToOrigin(3000));
+cubeText.register("render", generateRewindToOrigin(5000));
 cubeText.register("render-camera", generateFullscreen());
 // cubeText.register("render-camera", generateRotateY(3000));
-// cubeText.register("render-camera", generateRotateCameraUp(3000, 1, true));
+cubeText.register("render-camera", generateRotateCameraUp(5000, 1));
 // cubeText.register("render-camera", generateZoom(3000, 1));
 // cubeText.register("render", generateRotateCube(1, 1000, true, true));
 const drawText = "Hello CubeText!";
-cubeText.drawText(drawText, { size: 12 }, { size: 2, margin: 2 });
+cubeText.drawText(drawText, { size: 12 }, { size: 1, margin: 1 });
 
 // let i = 1;
 // const arr = "Hello CubeText!".split("");

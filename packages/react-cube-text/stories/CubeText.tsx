@@ -4,7 +4,6 @@ import {
   generateFullscreen,
   generateGradientColor,
   generateRotateCameraUp,
-  generateRotateTo,
   generateRotateY,
   randomRotate,
 } from "@paosder/cube-text";
