@@ -5,14 +5,16 @@ import {
   generateRandomColor,
   generateRandomPosition,
   generateRotateCameraUp,
-  generateRotateZAxis,
+  generateRotateY,
   generateZoom,
   randomRotate,
 } from "./cube-text";
 import {
-  generateRewindToOriginPosition,
+  generateNoisy,
+  generateRewindToOrigin,
+  generateRotateCube,
   generateRotateTo,
-} from "./cube-text/utils/render";
+} from "./cube-text/plugins/render";
 
 const style = document.createElement("style");
 document.body.style.margin = "0";
@@ -35,7 +37,7 @@ wrapper.appendChild(wrapper2);
 
 const cubeText = new CubeText(wrapper2);
 // cubeText.register(
-//   "initCube",
+//   "init-cube",
 //   generateRandomColor([
 //     {
 //       color: [0, 0, 0, 1],
@@ -47,18 +49,19 @@ const cubeText = new CubeText(wrapper2);
 //     },
 //   ])
 // );
-cubeText.register("initCube", randomRotate);
-cubeText.register("initCube", generateRandomPosition([-1, -1, -1], [1, 1, 1]));
+cubeText.register("init-cube", randomRotate);
+cubeText.register("init-cube", generateRandomPosition([-1, -1, -1], [1, 1, 1]));
 cubeText.register(
-  "initCube",
+  "init-cube",
   generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
 );
 // cubeText.register("render", generateRotateTo(3000));
-cubeText.register("render", generateRewindToOriginPosition(3000));
-cubeText.register("renderCamera", generateFullscreen());
-cubeText.register("renderCamera", generateRotateZAxis(3000));
-// cubeText.register("renderCamera", generateRotateCameraUp(3000, 1, true));
-cubeText.register("renderCamera", generateZoom(3000, 1));
+cubeText.register("render", generateRotateCube(1, 1000, true, true));
+cubeText.register("render", generateRewindToOrigin(3000));
+cubeText.register("render-camera", generateFullscreen());
+cubeText.register("render-camera", generateRotateY(3000));
+// cubeText.register("render-camera", generateRotateCameraUp(3000, 1, true));
+cubeText.register("render-camera", generateZoom(3000, 1));
 const drawText = "Hello CubeText!";
 cubeText.drawText(drawText, { size: 24 });
 

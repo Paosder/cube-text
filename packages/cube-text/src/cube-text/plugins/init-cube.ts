@@ -1,6 +1,6 @@
 import { Color, Coordinate } from "@paosder/gl-world";
 import { mat4, quat } from "gl-matrix";
-import type { CubeInfo, LifeCycleCallbacks } from "../type";
+import type { CubeInfo, LifeCyclePlugin } from "../type";
 
 export type ColorInfo = Array<{ color: Color; ratio: number }>;
 
@@ -8,7 +8,7 @@ export const generateRandomColor = (
   colorInfo: ColorInfo,
   overrideAlpha?: boolean
 ) => {
-  const randomColor: LifeCycleCallbacks["initCube"] = (cubeInfo: CubeInfo) => {
+  const randomColor: LifeCyclePlugin["init-cube"] = (cubeInfo: CubeInfo) => {
     const sum = colorInfo.reduce<number>((acc, el) => acc + el.ratio, 0);
     let random = Math.random() * sum;
     for (let i = 0, n = colorInfo.length; i < n; i += 1) {
@@ -31,7 +31,7 @@ export const generateRandomColor = (
   return randomColor;
 };
 
-export const randomRotate: LifeCycleCallbacks["initCube"] = (
+export const randomRotate: LifeCyclePlugin["init-cube"] = (
   cubeInfo: CubeInfo
 ) => {
   quat.random(cubeInfo.origin.rotation);
@@ -41,14 +41,12 @@ export const randomRotate: LifeCycleCallbacks["initCube"] = (
 export const generateRandomPosition = (
   min: Coordinate,
   max: Coordinate,
-  basis = false
+  basis: boolean = false
 ) => {
   const length = min.map((el, i) => {
     return (max[i] - el) / 2;
   });
-  const randomPosition: LifeCycleCallbacks["initCube"] = (
-    cubeInfo: CubeInfo
-  ) => {
+  const randomPosition: LifeCyclePlugin["init-cube"] = (cubeInfo: CubeInfo) => {
     for (let i = 0; i < 3; i += 1) {
       cubeInfo.position[i] =
         (basis ? cubeInfo.position[i] : 0) +
@@ -64,10 +62,7 @@ export const generateGradientColor = (
   color2: Color,
   overrideAlpha?: boolean
 ) => {
-  const gradientColor: LifeCycleCallbacks["initCube"] = (
-    cubeInfo,
-    position
-  ) => {
+  const gradientColor: LifeCyclePlugin["init-cube"] = (cubeInfo, position) => {
     const xRatio =
       (position.x / position.margin + position.width * 0.5) / position.width;
     if (overrideAlpha) {

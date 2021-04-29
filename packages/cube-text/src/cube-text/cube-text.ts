@@ -7,7 +7,7 @@ import {
   CubeInfo,
   CubeOptions,
   CubeTextScreenConfig,
-  LifeCycleCallbacks,
+  LifeCyclePlugin,
   TextOptions,
 } from "./type";
 
@@ -44,9 +44,9 @@ export class CubeText {
 
   screenConfig: CubeTextScreenConfig;
 
-  protected lifeCycleCallback: Record<
-    keyof LifeCycleCallbacks,
-    Set<LifeCycleCallbacks[keyof LifeCycleCallbacks]>
+  protected lifeCyclePlugin: Record<
+    keyof LifeCyclePlugin,
+    Set<LifeCyclePlugin[keyof LifeCyclePlugin]>
   >;
 
   threshold: number;
@@ -87,10 +87,10 @@ export class CubeText {
         height: this.world.canvas.clientHeight,
       },
     };
-    this.lifeCycleCallback = {
+    this.lifeCyclePlugin = {
       render: new Set(),
-      renderCamera: new Set(),
-      initCube: new Set(),
+      "render-camera": new Set(),
+      "init-cube": new Set(),
     };
     this.prevTime = 0;
     this.textCenterPos = [0, 0, 0];
@@ -104,36 +104,36 @@ export class CubeText {
   }
 
   /**
-   * register life cycle callback function.
+   * register life cycle plugin function.
    */
-  register<K extends keyof LifeCycleCallbacks>(
+  register<K extends keyof LifeCyclePlugin>(
     type: K,
-    callback: LifeCycleCallbacks[K]
+    plugin: LifeCyclePlugin[K]
   ) {
-    this.lifeCycleCallback[type].add(callback);
+    this.lifeCyclePlugin[type].add(plugin);
   }
 
   /**
-   * unregister life cycle callback function.
+   * unregister life cycle plugin function.
    */
-  unregister<K extends keyof LifeCycleCallbacks>(
+  unregister<K extends keyof LifeCyclePlugin>(
     type: K,
-    callback?: LifeCycleCallbacks[K]
+    plugin?: LifeCyclePlugin[K]
   ) {
-    if (!callback) {
-      // if callback is undefined, remove all callbacks in type.
-      this.lifeCycleCallback[type].clear();
+    if (!plugin) {
+      // if plugin is undefined, remove all plugins in type.
+      this.lifeCyclePlugin[type].clear();
     } else {
-      this.lifeCycleCallback[type].delete(callback);
+      this.lifeCyclePlugin[type].delete(plugin);
     }
   }
 
-  private executeCallback<K extends keyof LifeCycleCallbacks>(
+  private executePlugin<K extends keyof LifeCyclePlugin>(
     type: K,
-    ...args: Parameters<LifeCycleCallbacks[K]>
+    ...args: Parameters<LifeCyclePlugin[K]>
   ): boolean {
     let result = false;
-    this.lifeCycleCallback[type].forEach((callback) => {
+    this.lifeCyclePlugin[type].forEach((callback) => {
       // typescript issue.
       // TODO: better way to define this behavior.
       // https://github.com/Microsoft/TypeScript/issues/4130#issuecomment-303486552
@@ -154,11 +154,11 @@ export class CubeText {
     this.world.removeRenderer();
     this.world.detach();
     this.world.onResize = undefined;
-    (Object.keys(this.lifeCycleCallback) as Array<
-      keyof LifeCycleCallbacks
-    >).forEach((key) => {
-      this.lifeCycleCallback[key].clear();
-    });
+    (Object.keys(this.lifeCyclePlugin) as Array<keyof LifeCyclePlugin>).forEach(
+      (key) => {
+        this.lifeCyclePlugin[key].clear();
+      }
+    );
     this.world.disabled = true;
   }
 
@@ -261,7 +261,7 @@ export class CubeText {
               rotation: rotationQuat,
             },
           };
-          this.executeCallback("initCube", cubeData, {
+          this.executePlugin("init-cube", cubeData, {
             x,
             y,
             width: data.width,
@@ -324,7 +324,7 @@ export class CubeText {
       return;
     }
     if (
-      this.executeCallback(
+      this.executePlugin(
         "render",
         this.originCubes,
         this.cubeRenderer.cubes,
@@ -336,7 +336,7 @@ export class CubeText {
       this.cubeRenderer.updateBuffer(true);
     }
 
-    if (this.executeCallback("renderCamera", this.screenConfig, delta, time)) {
+    if (this.executePlugin("render-camera", this.screenConfig, delta, time)) {
       this.world.refreshCamera();
     }
 

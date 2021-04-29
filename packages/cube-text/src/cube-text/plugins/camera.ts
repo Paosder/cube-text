@@ -1,11 +1,11 @@
-import type { LifeCycleCallbacks } from "../type";
+import type { LifeCyclePlugin } from "../type";
 
 export const generateFullscreen = (
-  scale = 1,
-  start = 0
-): LifeCycleCallbacks["renderCamera"] => {
+  scale: number = 1,
+  start: number = 0
+): LifeCyclePlugin["render-camera"] => {
   let elapsed = 0;
-  const fullScreen: LifeCycleCallbacks["renderCamera"] = (config, delta) => {
+  const fullScreen: LifeCyclePlugin["render-camera"] = (config, delta) => {
     if (elapsed < start) {
       elapsed += delta;
       return false;
@@ -33,11 +33,11 @@ export const generateFullscreen = (
 export const generateZoom = (
   duration: number,
   targetRatio: number,
-  zoomDirection = 1,
-  start = 0
-): LifeCycleCallbacks["renderCamera"] => {
+  zoomDirection: number = 1,
+  start: number = 0
+): LifeCyclePlugin["render-camera"] => {
   let elapsed = 0;
-  const zoom: LifeCycleCallbacks["renderCamera"] = (config, delta) => {
+  const zoom: LifeCyclePlugin["render-camera"] = (config, delta) => {
     if (elapsed > duration + start) {
       return false;
     }
@@ -78,16 +78,13 @@ export const generateZoom = (
   return zoom;
 };
 
-export const generateRotateZAxis = (
+export const generateRotateY = (
   duration: number,
   loop?: boolean,
   zDistance?: number
-): LifeCycleCallbacks["renderCamera"] => {
+): LifeCyclePlugin["render-camera"] => {
   let elapsed = 0;
-  const rotateCircular: LifeCycleCallbacks["renderCamera"] = (
-    config,
-    delta
-  ) => {
+  const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
     if (!loop && elapsed > duration) {
       return false;
     }
@@ -121,12 +118,9 @@ export const generateRotateCameraUp = (
   duration: number,
   direction: number,
   loop?: boolean
-): LifeCycleCallbacks["renderCamera"] => {
+): LifeCyclePlugin["render-camera"] => {
   let elapsed = 0;
-  const rotateCircular: LifeCycleCallbacks["renderCamera"] = (
-    config,
-    delta
-  ) => {
+  const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
     if (!loop && elapsed > duration) {
       return false;
     }
