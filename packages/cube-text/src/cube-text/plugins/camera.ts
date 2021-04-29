@@ -15,14 +15,26 @@ export const computeZDistance = (config: CubeTextScreenConfig) => {
   return 0;
 };
 
+interface FullscreenConfig {
+  scale: number;
+  start: number;
+}
+
 export const generateFullscreen = (
-  scale: number = 1,
-  start: number = 0
+  pluginConfig?: Partial<FullscreenConfig>
 ): LifeCyclePlugin["render-camera"] => {
-  let elapsed = 0;
+  const defaultConfig: FullscreenConfig = {
+    scale: 1,
+    start: 0,
+  };
+  const c = {
+    ...defaultConfig,
+    ...pluginConfig,
+    elapsed: 0,
+  };
   const fullScreen: LifeCyclePlugin["render-camera"] = (config, delta) => {
-    if (elapsed < start) {
-      elapsed += delta;
+    if (c.elapsed < c.start) {
+      c.elapsed += delta;
       return false;
     }
     if (config.projection.type === "perspective") {
@@ -30,8 +42,8 @@ export const generateFullscreen = (
       const norm = Math.sqrt(
         config.camera.eye[0] ** 2 + config.camera.eye[2] ** 2
       );
-      config.camera.eye[0] *= (zDistance * scale) / norm;
-      config.camera.eye[2] *= (zDistance * scale) / norm;
+      config.camera.eye[0] *= (zDistance * c.scale) / norm;
+      config.camera.eye[2] *= (zDistance * c.scale) / norm;
       return true;
     }
     return false;
@@ -39,22 +51,36 @@ export const generateFullscreen = (
   return fullScreen;
 };
 
+interface ZoomConfig {
+  duration: number;
+  targetRatio: number;
+  init: number;
+  start: number;
+}
+
 export const generateZoom = (
-  duration: number,
-  targetRatio: number,
-  zoomDirection: number = 1,
-  start: number = 0
+  pluginConfig?: Partial<ZoomConfig>
 ): LifeCyclePlugin["render-camera"] => {
-  let elapsed = 0;
+  const defaultConfig: ZoomConfig = {
+    duration: 1000,
+    targetRatio: 1,
+    init: 0,
+    start: 0,
+  };
+  const c = {
+    ...defaultConfig,
+    ...pluginConfig,
+    elapsed: 0,
+  };
   const zoom: LifeCyclePlugin["render-camera"] = (config, delta) => {
-    if (elapsed > duration + start) {
+    if (c.elapsed > c.duration + c.start) {
       return false;
     }
-    elapsed += delta;
-    if (elapsed < start) {
+    c.elapsed += delta;
+    if (c.elapsed < c.start) {
       return false;
     }
-    const elapsedAfterStart = elapsed - start;
+    const elapsed = c.elapsed - c.start;
     if (config.projection.type === "perspective") {
       const zDistance = computeZDistance(config);
       const norm = Math.sqrt(
@@ -63,43 +89,60 @@ export const generateZoom = (
       config.camera.eye[0] *= zDistance / norm;
       config.camera.eye[2] *= zDistance / norm;
     }
-    if (zoomDirection > 0) {
-      // zoom out
-      config.camera.eye[0] *= targetRatio * (elapsedAfterStart / duration);
-      config.camera.eye[2] *= targetRatio * (elapsedAfterStart / duration);
-    } else {
-      // zoom in
-      config.camera.eye[0] =
-        config.camera.eye[0] * ((duration - elapsedAfterStart) / duration) +
-        config.camera.eye[0] * targetRatio * (elapsedAfterStart / duration);
-      config.camera.eye[2] =
-        config.camera.eye[2] * ((duration - elapsedAfterStart) / duration) +
-        config.camera.eye[2] * targetRatio * (elapsedAfterStart / duration);
-    }
+    config.camera.eye[0] =
+      config.camera.eye[0] * c.init * (1 - elapsed / c.duration) +
+      config.camera.eye[0] * c.targetRatio * (elapsed / c.duration);
+    config.camera.eye[2] =
+      config.camera.eye[2] * c.init * (1 - elapsed / c.duration) +
+      config.camera.eye[2] * c.targetRatio * (elapsed / c.duration);
     return true;
   };
   return zoom;
 };
 
+interface RotateYConfig {
+  duration: number;
+  loop: boolean;
+  start: number;
+  cycle: number;
+  zDistance?: number;
+}
+
 export const generateRotateY = (
-  duration: number,
-  loop?: boolean,
-  zDistance?: number
+  pluginConfig?: Partial<RotateYConfig>
 ): LifeCyclePlugin["render-camera"] => {
-  let elapsed = 0;
+  const defaultConfig: RotateYConfig = {
+    duration: 1000,
+    loop: true,
+    start: 0,
+    cycle: 1,
+  };
+  const c = {
+    ...defaultConfig,
+    ...pluginConfig,
+    elapsed: 0,
+    lastTuned: false,
+  };
   const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
-    if (!loop && elapsed > duration) {
+    if (!c.loop && c.elapsed >= c.duration * c.cycle + c.start) {
+      if (c.lastTuned) {
+        return false;
+      }
+      c.lastTuned = true;
+      c.elapsed = c.duration * c.cycle - delta;
+    }
+    c.elapsed += delta;
+    if (c.elapsed < c.start) {
       return false;
     }
-    elapsed += delta;
-
-    if (zDistance !== undefined) {
+    const elapsed = c.elapsed - c.start;
+    if (c.zDistance !== undefined) {
       config.camera.eye[0] =
         config.camera.lookAt[0] +
-        zDistance * Math.sin(Math.PI * (elapsed / duration));
+        c.zDistance * Math.sin(Math.PI * (elapsed / c.duration));
       config.camera.eye[2] =
         config.camera.lookAt[2] +
-        zDistance * Math.cos(Math.PI * (elapsed / duration));
+        c.zDistance * Math.cos(Math.PI * (elapsed / c.duration));
     } else {
       const l2Distance = Math.sqrt(
         (config.camera.eye[0] - config.camera.lookAt[0]) ** 2 +
@@ -107,30 +150,56 @@ export const generateRotateY = (
       );
       config.camera.eye[0] =
         config.camera.lookAt[0] +
-        l2Distance * Math.sin(Math.PI * (elapsed / duration) * 2);
+        l2Distance * Math.sin(Math.PI * (elapsed / c.duration) * 2);
       config.camera.eye[2] =
         config.camera.lookAt[2] +
-        l2Distance * Math.cos(Math.PI * (elapsed / duration) * 2);
+        l2Distance * Math.cos(Math.PI * (elapsed / c.duration) * 2);
     }
     return true;
   };
   return rotateCircular;
 };
 
+interface RotateCameraUpConfig {
+  duration: number;
+  direction: number;
+  loop: boolean;
+  start: number;
+  cycle: number;
+}
+
 export const generateRotateCameraUp = (
-  duration: number,
-  direction: number,
-  loop?: boolean
+  pluginConfig?: Partial<RotateCameraUpConfig>
 ): LifeCyclePlugin["render-camera"] => {
-  let elapsed = 0;
+  const defaultConfig: RotateCameraUpConfig = {
+    duration: 1000,
+    direction: 1,
+    loop: true,
+    start: 0,
+    cycle: 1,
+  };
+  const c = {
+    ...defaultConfig,
+    ...pluginConfig,
+    elapsed: 0,
+    lastTuned: false,
+  };
   const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
-    if (!loop && elapsed > duration) {
+    if (!c.loop && c.elapsed >= c.duration * c.cycle + c.start) {
+      if (c.lastTuned) {
+        return false;
+      }
+      c.lastTuned = true;
+      c.elapsed = c.duration * c.cycle - delta;
+    }
+    c.elapsed += delta;
+    if (c.elapsed < c.start) {
       return false;
     }
-    elapsed += delta;
+    const elapsed = c.elapsed - c.start;
     config.camera.up[0] =
-      Math.sin((Math.PI * elapsed * 2) / duration) * direction;
-    config.camera.up[1] = Math.cos((Math.PI * elapsed * 2) / duration);
+      Math.sin((Math.PI * elapsed * 2) / c.duration) * c.direction;
+    config.camera.up[1] = Math.cos((Math.PI * elapsed * 2) / c.duration);
     return true;
   };
   return rotateCircular;

@@ -13,6 +13,7 @@ import {
   generateNoisy,
   generateRewindToOrigin,
   generateRotateCube,
+  generateRotateCubeTo,
 } from "./cube-text/plugins/render";
 
 const style = document.createElement("style");
@@ -35,36 +36,46 @@ wrapper2.style.height = "100%";
 wrapper.appendChild(wrapper2);
 
 const cubeText = new CubeText(wrapper2);
-// cubeText.register(
-//   "init-cube",
-//   generateRandomColor([
-//     {
-//       color: [0, 0, 0, 1],
-//       ratio: 0.5,
-//     },
-//     {
-//       color: [1, 0, 0, 1],
-//       ratio: 0.5,
-//     },
-//   ])
-// );
+cubeText.register("init-cube", generateRandomColor());
 cubeText.register("init-cube", randomRotate);
 cubeText.register(
   "init-cube",
-  generateRandomPosition([-1000, -1000, -1000], [1000, 1000, 1000], true)
+  generateRandomPosition({ basis: true, min: [-1000, -1000, -1000] })
 );
-cubeText.register(
-  "init-cube",
-  generateGradientColor([1, 0, 0, 1], [1, 0, 1, 1])
-);
-// cubeText.register("render", generateRotateTo(3000));
+// cubeText.register("init-cube", generateGradientColor());
+// cubeText.register(
+//   "render",
+//   generateRotateCubeTo({
+//     duration: 3000,
+//   })
+// );
 // cubeText.register("render", generateRotateCube(4, 3000, true, true));
-cubeText.register("render", generateRewindToOrigin(5000));
+cubeText.register("render", generateRewindToOrigin({ duration: 5000 }));
 cubeText.register("render-camera", generateFullscreen());
-// cubeText.register("render-camera", generateRotateY(3000));
-cubeText.register("render-camera", generateRotateCameraUp(5000, 1));
-// cubeText.register("render-camera", generateZoom(3000, 1));
-// cubeText.register("render", generateRotateCube(1, 1000, true, true));
+// cubeText.register(
+//   "render-camera",
+//   generateRotateY({
+//     duration: 3000,
+//   })
+// );
+// cubeText.register(
+//   "render-camera",
+//   generateRotateCameraUp({
+//     cycle: 2,
+//   })
+// );
+// cubeText.register(
+//   "render-camera",
+//   generateZoom({
+//     init: 0.1,
+//     targetRatio: 1,
+//     duration: 3000,
+//   })
+// );
+// cubeText.register(
+//   "render",
+//   generateRotateCube({ radius: 0.5, individual: false })
+// );
 const drawText = "Hello CubeText!";
 cubeText.drawText(drawText, { size: 12 }, { size: 1, margin: 1 });
 
@@ -85,6 +96,6 @@ cubeText.drawText(drawText, { size: 12 }, { size: 1, margin: 1 });
 //     clearInterval(t);
 //   }
 // };
-// const t = setInterval(interval, 30);
+// const t = setInterval(interval, 300);
 
 cubeText.run();

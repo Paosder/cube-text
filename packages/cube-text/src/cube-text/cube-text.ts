@@ -256,7 +256,7 @@ export class CubeText {
               cubeOptions.margin;
           }
           const y =
-            -(i - 1) * (cubeOptions.margin + cubeOptions.size) +
+            -i * (cubeOptions.margin + cubeOptions.size) +
             cubeOptions.size * 0.5 +
             totalHeight * 0.5;
           if (cubeOptions.align === "center") {

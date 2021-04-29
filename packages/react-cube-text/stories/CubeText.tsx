@@ -45,10 +45,7 @@ export const CubeText = React.forwardRef<Renderer, CubeTextProps>(
     useEffect(() => {
       if (rendererRef.current) {
         rendererRef.current.register("render-camera", generateFullscreen());
-        rendererRef.current.register(
-          "init-cube",
-          generateGradientColor([1, 0, 0, 1], [0, 1, 1, 1])
-        );
+        rendererRef.current.register("init-cube", generateGradientColor());
         rendererRef.current.register("init-cube", randomRotate);
       }
     }, []);
