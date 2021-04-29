@@ -5,7 +5,7 @@
     "email": "denjaraos@gmail.com",
     "url": "https://github.com/Paosder"
   },
-  "version": "0.1.1-alpha.2",
+  "version": "0.1.1-alpha.3",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "license": "MIT",
@@ -27,5 +27,6 @@
   },
   "dependencies": {
     "@paosder/vector-map": "^0.2.0"
-  }
+  },
+  "gitHead": "2b7a1265535004c4b675c0473eb541a6851ef967"
 }
