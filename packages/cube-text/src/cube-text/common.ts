@@ -22,6 +22,8 @@ export function drawToCanvas(
     Math.ceil(measured.actualBoundingBoxLeft + measured.actualBoundingBoxRight),
     Math.ceil(measured.width)
   );
+  canvas.height =
+    measured.fontBoundingBoxAscent + measured.fontBoundingBoxDescent;
 
   // re-initialize context2d.
   // https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-set-bitmap-dimensions
@@ -30,9 +32,9 @@ export function drawToCanvas(
   textCtx.fillStyle = "black";
 
   if (drawType === "fill") {
-    textCtx.fillText(text, 0, fontSize * 0.5);
+    textCtx.fillText(text, 0, canvas.height * 0.5);
   } else {
-    textCtx.strokeText(text, 0, fontSize * 0.5);
+    textCtx.strokeText(text, 0, canvas.height * 0.5);
   }
-  return textCtx.getImageData(0, 0, canvas.width, fontSize);
+  return textCtx.getImageData(0, 0, canvas.width, canvas.height);
 }

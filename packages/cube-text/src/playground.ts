@@ -55,6 +55,6 @@ cubeText.register(
   })
 );
 const drawText = "Hello CubeText!";
-cubeText.drawText(drawText, { size: 16 }, { size: 1, margin: 1 });
+cubeText.drawText(drawText, { size: 16 }, { size: 2, margin: 1 });
 
 cubeText.run();
