@@ -68,3 +68,13 @@ cubeText.run();
 **Type definitions are already included in the package, but not just documented yet.**
 
 Work-in-Progress.
+
+## Development
+
+```shell
+# 1. watch essential local packages: `gl-variable`, `gl-world`.
+> yarn dev
+# 2. run dev server (playground or storybook).
+> yarn dev:webpack # run playground
+> yarn dev:storybook # run storybook
+```
