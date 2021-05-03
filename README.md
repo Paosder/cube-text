@@ -1,12 +1,11 @@
-![thumbnail-gif](./thumbnail.gif)
-
 # CubeText
 
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/)
+[![npm version](https://badge.fury.io/js/%40paosder%2Fcube-text.svg)](https://badge.fury.io/js/%40paosder%2Fcube-text)
 
-![thumbnail](./thumbnail.png)
+![thumbnail-gif](./thumbnail.gif)
 
-Render text with customizable cubes using webgl.
+Render text with customizable cubes using webGL.
 
 # This package is currently Work-In-Progress so API specs may change occasionally. Keep in mind if you use it at the production level.
 
