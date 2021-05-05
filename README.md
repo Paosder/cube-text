@@ -16,6 +16,10 @@ Render text with customizable cubes using webGL.
 > yarn add @paosder/react-cube-text # react component version. (optional)
 ```
 
+## Examples
+
+[CodeSandbox](https://codesandbox.io/embed/cube-text-example-pgesr?autoresize=1&fontsize=14&hidenavigation=1&theme=dark)
+
 ## Usage
 
 ```typescript
