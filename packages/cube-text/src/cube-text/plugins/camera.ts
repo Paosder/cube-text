@@ -32,7 +32,15 @@ export const generateFullscreen = (
     ...pluginConfig,
     elapsed: 0,
   };
-  const fullScreen: LifeCyclePlugin["render-camera"] = (config, delta) => {
+  const fullScreen: LifeCyclePlugin["render-camera"] = (
+    config,
+    delta,
+    _,
+    rewind
+  ) => {
+    if (rewind) {
+      c.elapsed = 0;
+    }
     if (c.elapsed < c.start) {
       c.elapsed += delta;
       return false;
@@ -72,7 +80,10 @@ export const generateZoom = (
     ...pluginConfig,
     elapsed: 0,
   };
-  const zoom: LifeCyclePlugin["render-camera"] = (config, delta) => {
+  const zoom: LifeCyclePlugin["render-camera"] = (config, delta, _, rewind) => {
+    if (rewind) {
+      c.elapsed = 0;
+    }
     if (c.elapsed > c.duration + c.start) {
       return false;
     }
@@ -123,7 +134,16 @@ export const generateRotateY = (
     elapsed: 0,
     lastTuned: false,
   };
-  const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
+  const rotateCircular: LifeCyclePlugin["render-camera"] = (
+    config,
+    delta,
+    _,
+    rewind
+  ) => {
+    if (rewind) {
+      c.elapsed = 0;
+      c.lastTuned = false;
+    }
     if (!c.loop && c.elapsed >= c.duration * c.cycle + c.start) {
       if (c.lastTuned) {
         return false;
@@ -184,7 +204,16 @@ export const generateRotateCameraUp = (
     elapsed: 0,
     lastTuned: false,
   };
-  const rotateCircular: LifeCyclePlugin["render-camera"] = (config, delta) => {
+  const rotateCircular: LifeCyclePlugin["render-camera"] = (
+    config,
+    delta,
+    _,
+    rewind
+  ) => {
+    if (rewind) {
+      c.elapsed = 0;
+      c.lastTuned = false;
+    }
     if (!c.loop && c.elapsed >= c.duration * c.cycle + c.start) {
       if (c.lastTuned) {
         return false;

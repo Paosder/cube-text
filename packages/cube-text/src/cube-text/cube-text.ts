@@ -366,6 +366,28 @@ export class CubeText {
     this.prevTime = time;
   }
 
+  /**
+   * rewind plugins.
+   */
+  rewind() {
+    this.executePlugin(
+      "render",
+      this.originCubes,
+      this.cubeRenderer.cubes,
+      this.screenConfig,
+      0,
+      this.prevTime,
+      true
+    );
+    this.executePlugin(
+      "render-camera",
+      this.screenConfig,
+      0,
+      this.prevTime,
+      true
+    );
+  }
+
   stop() {
     if (this.isRunning !== undefined) {
       cancelAnimationFrame(this.isRunning);

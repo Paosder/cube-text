@@ -73,12 +73,14 @@ export interface LifeCyclePlugin {
     cubes: VectorMap<string, VariableIndex>,
     screenConfig: CubeTextScreenConfig,
     delta: number,
-    time: number
+    time: number,
+    rewind?: boolean
   ) => boolean;
   "render-camera": (
     screenConfig: CubeTextScreenConfig,
     delta: number,
-    time: number
+    time: number,
+    rewind?: boolean
   ) => boolean;
   "init-cube": (
     cubeInfo: CubeInfo,

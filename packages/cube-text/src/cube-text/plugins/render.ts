@@ -28,8 +28,14 @@ export const generateRotateCubeTo = (
     origin,
     current,
     _,
-    delta
+    delta,
+    __,
+    rewind
   ) => {
+    if (rewind) {
+      c.elapsed = 0;
+      c.lastTuned = false;
+    }
     if (c.elapsed > c.duration + c.start) {
       if (c.lastTuned) {
         return false;
@@ -83,8 +89,14 @@ export const generateRewindToOrigin = (
     origin,
     current,
     _,
-    delta
+    delta,
+    __,
+    rewind
   ) => {
+    if (rewind) {
+      c.elapsed = 0;
+      c.lastTuned = false;
+    }
     let ratio = 1;
     if (c.elapsed > c.duration + c.start) {
       if (c.lastTuned) {
@@ -174,7 +186,18 @@ export const generateRotateCube = (
     elapsed: 0,
     lastTuned: false,
   };
-  const rotateCube: LifeCyclePlugin["render"] = (origin, current, _, delta) => {
+  const rotateCube: LifeCyclePlugin["render"] = (
+    origin,
+    current,
+    _,
+    delta,
+    __,
+    rewind
+  ) => {
+    if (rewind) {
+      c.elapsed = 0;
+      c.lastTuned = false;
+    }
     if (!c.loop && c.elapsed > c.duration * c.cycle + c.start) {
       if (c.lastTuned) {
         return false;
