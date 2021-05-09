@@ -51,6 +51,10 @@ export class CubeText {
 
   threshold: number;
 
+  /**
+   * Create CubeText into element.
+   * @param element element id | HTMLElement.
+   */
   constructor(element: string | HTMLElement) {
     if (typeof element === "string") {
       const targetElement = document.getElementById(element);
@@ -102,7 +106,11 @@ export class CubeText {
     this.originCubes = new VectorMap();
   }
 
-  pointerMoveEv(e: PointerEvent) {
+  /**
+   * Set world mouse position.
+   * @param e PointerEvent.
+   */
+  protected pointerMoveEv(e: PointerEvent) {
     this.world.mouseX = e.offsetX;
     this.world.mouseY = e.offsetY;
   }
@@ -132,6 +140,12 @@ export class CubeText {
     }
   }
 
+  /**
+   * Execute plugins.
+   * @param type typeof plugin. ex) 'render', 'render-camera'
+   * @param args arguments for serve.
+   * @returns collect plugin result and return true if any plugin returns something.
+   */
   private executePlugin<K extends keyof LifeCyclePlugin>(
     type: K,
     ...args: Parameters<LifeCyclePlugin[K]>
@@ -151,6 +165,9 @@ export class CubeText {
     return result;
   }
 
+  /**
+   * Destroy CubeText.
+   */
   destroy() {
     this.stop();
     this.world.canvas.removeEventListener("pointermove", this.pointerMoveEv);
@@ -166,6 +183,13 @@ export class CubeText {
     this.world.disabled = true;
   }
 
+  /**
+   * Draw text into canvas.
+   * @param text text to draw.
+   * @param textOptions text options.
+   * @param cubeOptions cube options.
+   * @param fontFamilyOptions font options.
+   */
   drawText(
     text: string,
     textOptions: Partial<TextOptions> = defaultTextOptions,
