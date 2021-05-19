@@ -2312,9 +2312,9 @@
     "@octokit/openapi-types" "^6.1.1"
 
 "@paosder/vector-map@^0.2.0":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@paosder/vector-map/-/vector-map-0.2.2.tgz#2aeeeeb3db1a4868b7a94cf68c05b88d584ef648"
-  integrity sha512-FBpd7HGNUSKCoK3gfJrPi6x2ZVGcxWw5FMGErMZdlPQ0r7MM6wL0pXpkxo25QLmcrGdeJ9v8eSrrzBRJHqflgQ==
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@paosder/vector-map/-/vector-map-0.2.3.tgz#f921d353b5a5b3a384c7d3642a33269e474fe64e"
+  integrity sha512-Xy4TAuLEweXWjtJvEuUK0SlyYUpGeDdz2BzVvgxR468dKEy3dV5tv9UUNfVWcWU56uZ8iKTbmHQzRCrGDIorqg==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.4.3":
   version "0.4.3"
