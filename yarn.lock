@@ -6340,10 +6340,10 @@ esbuild-plugin-glslify@^1.0.1:
   dependencies:
     glslify "^7.1.1"
 
-esbuild@^0.11.13:
-  version "0.11.21"
-  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.21.tgz#9220b0185ae40947811dcaff6bfcfb572bebac08"
-  integrity sha512-FqpYdJqiTeLDbj3vqxc/fG8UmHIEvQrDaUxSw1oJf4giLd/tnMDUUlXellCjOab7qGKQ5hUFD5eQgmO+tkZeow==
+esbuild@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.0.tgz#84f49105994f437c2fe307daa5b32e8885c3d10d"
+  integrity sha512-vUKQ6TiMWGCtI7jLSrMmBVY4aj4As9J6NsFnrS9insd2F5KKD3mr1jUe+SB4KsMACkQIGtTtkksPpRmmqgxDHw==
 
 escalade@^3.0.2, escalade@^3.1.1:
   version "3.1.1"
