@@ -23,6 +23,8 @@ export function drawToCanvas(
     Math.ceil(measured.width)
   );
   canvas.height =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     measured.fontBoundingBoxAscent + measured.fontBoundingBoxDescent;
 
   // re-initialize context2d.
